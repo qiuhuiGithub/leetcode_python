@@ -231,6 +231,64 @@ def maxArea(height):
 
 # print(maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7]))
 
+# 12. 整数转罗马数字
+def intToRoman(num: int) -> str:
+    res = ''
+    int = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+    roman = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
+    for i in range(len(int)):
+        while num >= int[i]:
+            res += roman[i]
+            num -= int[i]
+    return res
+
+
+# print(intToRoman(1994))
+
+# 13. 罗马数字转整数
+def romanToInt(s: str) -> int:
+    res = 0
+    int = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+    roman = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
+    # for i in range(len(roman)):
+    #     while s:
+    #         if roman[i] in [s[0], s[0:2]]:
+    #             s = s[1:] if len(roman[i]) == 1 else s[2:]
+    #             res += int[i]
+    #         else:
+    #             break
+    i = 0
+    while i < len(s):
+        if i + 1 < len(s) and s[i:i + 2] in roman:
+            res += int[roman.index(s[i:i + 2])]
+            i += 2
+        elif s[i:i + 1] in roman:
+            res += int[roman.index(s[i:i + 1])]
+            i += 1
+    return res
+
+
+# print(romanToInt('IV'))
+
+# 14. 最长公共前缀
+def longestCommonPrefix(strs) -> str:
+    if not strs:
+        return ''
+    if len(strs) == 1:
+        return strs[0]
+    s = strs[0]
+    res = ''
+    for i in range(len(s)):
+        for str in strs[1:]:
+            if i < len(str) and str[i] == s[i]:
+                continue
+            else:
+                return res
+        res += s[i]
+    return res
+
+print(longestCommonPrefix(["dlower","flow","flight"]))
+
 
 # 42.接雨水
 # def trap(height):  # 栈实现
