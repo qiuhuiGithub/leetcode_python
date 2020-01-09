@@ -287,7 +287,63 @@ def longestCommonPrefix(strs) -> str:
         res += s[i]
     return res
 
-print(longestCommonPrefix(["dlower","flow","flight"]))
+
+# print(longestCommonPrefix(["dlower", "flow", "flight"]))
+
+
+# 15. 三数之和
+def threeSum(nums):
+    res = []
+    if not nums and len(nums) < 3:
+        return res
+    nums.sort(reverse=False)
+    for i in range(len(nums)):
+        if nums[i] > 0:
+            return res
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        left, right = i + 1, len(nums) - 1
+        while left < right:
+            sum = nums[i] + nums[left] + nums[right]
+            if sum == 0:
+                res.append([nums[i], nums[left], nums[right]])
+                while left < right and nums[left + 1] == nums[left]:
+                    left += 1
+                while left < right and nums[right - 1] == nums[right]:
+                    right -= 1
+                left, right = left + 1, right - 1
+            elif sum < 0:
+                left += 1
+            else:
+                right -= 1
+    return res
+
+
+# print(threeSum([0,0,0]))
+
+
+# 16.最接近的三数之和
+def threeSumClosest(nums, target):
+    res = 2 ** 31 - 1
+    if not nums and len(nums) < 3:
+        return res
+    nums.sort(reverse=False)
+    for i in range(len(nums)):
+        left, right = i + 1, len(nums) - 1
+        while left < right:
+            sum = nums[i] + nums[left] + nums[right]
+            if abs(sum - target) < abs(res - target):
+                res = sum
+            if sum > target:
+                right -= 1
+            elif sum < target:
+                left += 1
+            else:
+                return res
+    return res
+
+
+print(threeSumClosest([1, 1, -1, -1, 3], -1))
 
 
 # 42.接雨水
