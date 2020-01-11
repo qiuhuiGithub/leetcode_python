@@ -59,7 +59,7 @@ def lengthOfLongestSubstring(s):
     return ans
 
 
-# print(lengthOfLongestSubstring('abcdb'))
+# print(lengthOfLongestSubstring("abcdb"))
 
 # 4. 找两个数组的中位数
 def findMedianSortedArrays(nums1, nums2):
@@ -100,14 +100,14 @@ def longestPalindrome(s):
     return s[left:right + 1]
 
 
-# print(longestPalindrome('abcba'))
+# print(longestPalindrome("abcba"))
 
 
 # 6. z字形变换
 def convert(s, numRows):
     if numRows == 1:
         return s
-    res = [''] * min(numRows, len(s))
+    res = [""] * min(numRows, len(s))
     cur_row = 0
     go_down = -1
     for c in s:
@@ -115,10 +115,10 @@ def convert(s, numRows):
         if cur_row == 0 or cur_row == numRows - 1:
             go_down = -go_down
         cur_row += go_down
-    return ''.join(res)
+    return "".join(res)
 
 
-# print(convert('ABC', 4))
+# print(convert("ABC", 4))
 
 # 7. 整数反转
 def reverse(x):
@@ -142,23 +142,23 @@ def myAtoi(str):
     str = str.strip()
     if not str:
         return 0
-    if str[0] not in ['+', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+    if str[0] not in ["+", "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]:
         return 0
     minus = 1
-    if str[0] == '-':
+    if str[0] == "-":
         minus = -1
         str = str[1:]
-    elif str[0] == '+':
+    elif str[0] == "+":
         str = str[1:]
     for i in range(len(str)):
-        if str[i] != '0':
+        if str[i] != "0":
             str = str[i:]
             break
     if not str:
         return 0
-    res = ''
+    res = ""
     for char in str:
-        if char in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+        if char in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]:
             res += char
         else:
             break
@@ -193,8 +193,8 @@ class Solution():
     # def isMatch(self, text, pattern):  # 回溯
     #     if not pattern:
     #         return not text
-    #     first_match = bool(text) and pattern[0] in [text[0], '.']
-    #     if len(pattern) >= 2 and pattern[1] == '*':
+    #     first_match = bool(text) and pattern[0] in [text[0], "."]
+    #     if len(pattern) >= 2 and pattern[1] == "*":
     #         return self.isMatch(text, pattern[2:]) or (first_match and self.isMatch(text[1:], pattern))
     #     else:
     #         return first_match and self.isMatch(text[1:], pattern[1:])
@@ -203,8 +203,8 @@ class Solution():
         dp[-1][-1] = True
         for i in range(len(text), -1, -1):
             for j in range(len(pattern) - 1, -1, -1):
-                first_match = i < len(text) and pattern[j] in [text[i], '.']
-                if j + 1 < len(pattern) and pattern[j + 1] == '*':
+                first_match = i < len(text) and pattern[j] in [text[i], "."]
+                if j + 1 < len(pattern) and pattern[j + 1] == "*":
                     dp[i][j] = dp[i][j + 2] or (first_match and dp[i + 1][j])
                 else:
                     dp[i][j] = first_match and dp[i + 1][j + 1]
@@ -212,7 +212,7 @@ class Solution():
 
 
 # s = Solution()
-# print(s.isMatch('aa', 'a*'))
+# print(s.isMatch("aa", "a*"))
 
 
 # 11. 盛水最多的容器
@@ -233,7 +233,7 @@ def maxArea(height):
 
 # 12. 整数转罗马数字
 def intToRoman(num: int) -> str:
-    res = ''
+    res = ""
     int = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
     roman = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
     for i in range(len(int)):
@@ -268,16 +268,16 @@ def romanToInt(s: str) -> int:
     return res
 
 
-# print(romanToInt('IV'))
+# print(romanToInt("IV"))
 
 # 14. 最长公共前缀
 def longestCommonPrefix(strs) -> str:
     if not strs:
-        return ''
+        return ""
     if len(strs) == 1:
         return strs[0]
     s = strs[0]
-    res = ''
+    res = ""
     for i in range(len(s)):
         for str in strs[1:]:
             if i < len(str) and str[i] == s[i]:
@@ -343,7 +343,62 @@ def threeSumClosest(nums, target):
     return res
 
 
-print(threeSumClosest([1, 1, -1, -1, 3], -1))
+# print(threeSumClosest([1, 1, -1, -1, 3], -1))
+
+
+# 17. 电话号码字母组合
+def letterCombinations(digits):
+    res = []
+    phone = {"0": " ", "1": "*", "2": "abc", "3": "def", "4": "ghi", "5": "jkl", "6": "mno", "7": "pqrs", "8": "tuv",
+             "9": "wxyz"}
+    if not digits:
+        return res
+
+    def backtrack(combine, digits):
+        if not digits:
+            res.append(combine)
+        else:
+            letters = phone[digits[0]]
+            for letter in letters:
+                backtrack(combine + letter, digits[1:])
+
+    backtrack("", digits)
+    return res
+
+
+# print(letterCombinations(""))
+
+
+# 18. 四数之和
+def fourSum(nums, target):
+    res = []
+    if not nums or len(nums) < 4:
+        return res
+    nums.sort(reverse=False)
+    for i in range(len(nums) - 3):
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        for j in range(i + 1, len(nums) - 2):
+            if j > i + 1 and nums[j] == nums[j - 1]:
+                continue
+            k, l = j + 1, len(nums) - 1
+            while k < l:
+                sum = nums[i] + nums[j] + nums[k] + nums[l]
+                if sum == target:
+                    res.append([nums[i], nums[j], nums[k], nums[l]])
+                    while k < l and nums[k + 1] == nums[k]:
+                        k += 1
+                    while k < l and nums[l - 1] == nums[l]:
+                        l -= 1
+                    k, l = k + 1, l - 1
+                elif sum < target:
+                    k += 1
+                else:
+                    l -= 1
+    return res
+
+
+print(fourSum([1, 0, -1, 0, -2, 2], 0))
 
 
 # 42.接雨水
@@ -410,5 +465,5 @@ def addStrings(num1, num2):
         j -= 1
     return ans[::-1]
 
-# print(addStrings('123', '956'))
-# print(multiply('123', '456'))
+# print(addStrings("123", "956"))
+# print(multiply("123", "456"))
