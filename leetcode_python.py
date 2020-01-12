@@ -398,7 +398,150 @@ def fourSum(nums, target):
     return res
 
 
-print(fourSum([1, 0, -1, 0, -2, 2], 0))
+# print(fourSum([1, 0, -1, 0, -2, 2], 0))
+
+# 19. 删除链表的倒数第n个节点
+def removeNthFromEnd(head: ListNode, n: int) -> ListNode:
+    start = ListNode(0)
+    fast = slow = start
+    start.next = head
+    for i in range(n):
+        fast = fast.next
+    if not fast:
+        return None
+    while fast.next:
+        fast = fast.next
+        slow = slow.next
+    slow.next = slow.next.next
+
+    return start.next
+
+
+# l1 = ListNode(1)
+# l1.next = ListNode(2)
+# l1.next.next = ListNode(3)
+# l1.next.next.next = ListNode(4)
+# result = removeNthFromEnd(l1, 1)
+# while result:
+#     print(result.val)
+#     result = result.next
+
+# 20.有效的括号
+def isValid(s) -> bool:
+    if not s:
+        return True
+    stack = []
+    dict = {')': '(', ']': '[', '}': '{'}
+    for char in s:
+        if char in dict.values():
+            stack.append(char)
+        if char in dict.keys():
+            if stack and stack[-1] == dict[char]:
+                stack.pop()
+            else:
+                return False
+    return stack == []
+
+
+# print(isValid('['))
+
+# 21.合并两个有序链表
+def mergeTwoLists(l1: ListNode, l2: ListNode) -> ListNode:
+    head = ListNode(0)
+    pointer = head
+    while l1 and l2:
+        if l1.val < l2.val:
+            pointer.next = ListNode(l1.val)
+            l1 = l1.next
+        else:
+            pointer.next = ListNode(l2.val)
+            l2 = l2.next
+        pointer = pointer.next
+    if l1:
+        pointer.next = l1
+    if l2:
+        pointer.next = l2
+    return head.next
+
+
+# l1 = ListNode(1)
+# l1.next = ListNode(2)
+# l1.next.next = ListNode(3)
+# l2 = ListNode(1)
+# l2.next = ListNode(2)
+# l2.next.next = ListNode(4)
+# result = mergeTwoLists(l1, l2)
+# while result:
+#     print(result.val)
+#     result = result.next
+
+
+# 22. 括号生成
+def generateParenthesis(n):
+    res = []
+    if n < 1:
+        return res
+
+    def backtrack(curr, open, close):
+        if len(curr) == 2 * n:
+            res.append(curr)
+        if open < n:
+            backtrack(curr + '(', open + 1, close)
+        if close < open:
+            backtrack(curr + ')', open, close + 1)
+
+    backtrack("", 0, 0)
+    return res
+
+
+# print(generateParenthesis(0))
+
+# 23. 合并k个排序链表
+def mergeKLists(lists) -> ListNode:
+    if not lists:
+        return None
+    index = 1
+    while index < len(lists):
+        for i in range(0, len(lists) - index, index * 2):
+            lists[i] = mergeTwoLists(lists[i], lists[i + index])
+        index *= 2
+    return lists[0]
+
+
+# l1 = ListNode(1)
+# l1.next = ListNode(2)
+# l1.next.next = ListNode(3)
+# l2 = ListNode(1)
+# l2.next = ListNode(2)
+# l2.next.next = ListNode(4)
+# lists = [l1,l2]
+# result = mergeKLists(lists)
+# while result:
+#     print(result.val)
+#     result = result.next
+
+
+# 24. 两两交换链表中的节点
+def swapPairs(head: ListNode) -> ListNode:
+    p_head = tmp = ListNode(0)
+    p_head.next = head
+    while tmp.next and tmp.next.next:
+        start, end = tmp.next, tmp.next.next
+        tmp.next = end
+        start.next = end.next
+        end.next = start
+        tmp = start
+    return p_head.next
+
+
+# l1 = ListNode(1)
+# l1.next = ListNode(2)
+# l1.next.next = ListNode(3)
+# l1.next.next.next = ListNode(4)
+# result = swapPairs(l1)
+# while result:
+#     print(result.val)
+#     result = result.next
 
 
 # 42.接雨水
