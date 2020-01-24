@@ -543,6 +543,46 @@ def swapPairs(head: ListNode) -> ListNode:
 #     print(result.val)
 #     result = result.next
 
+# 26. 删除排序数组中的重复项
+def removeDuplicates(nums):
+    if not nums:
+        return 0
+    i = 0
+    for j in range(1, len(nums)):
+        if nums[j] != nums[i]:
+            i += 1
+            nums[i] = nums[j]
+    return i + 1
+
+
+# print(removeDuplicates([1, 1, 2, 2]))
+
+
+# 27. 移除元素
+def removeElement(nums, val):
+    if not nums:
+        return 0
+    i = 0
+    for j in range(len(nums)):
+        if nums[j] != val:
+            nums[i] = nums[j]
+            i += 1
+    return i
+
+
+# print(removeElement([1, 2, 3, 4], 2))
+
+
+# 28. 实现strStr()
+def strStr(haystack, needle):
+    if not needle:
+        return 0
+    for i in range(len(haystack)):
+        if needle[0] == haystack[i] and haystack[i:i + len(needle)] == needle:
+            return i
+    return -1
+
+# print(strStr('hello','ll'))
 
 # 42.接雨水
 # def trap(height):  # 栈实现
