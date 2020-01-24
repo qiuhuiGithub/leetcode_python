@@ -582,7 +582,28 @@ def strStr(haystack, needle):
             return i
     return -1
 
+
 # print(strStr('hello','ll'))
+
+# 29. 两数相除
+def divide(dividend, divisor):
+    if dividend == 0:
+        return 0
+    if dividend == -2 ** 31 and divisor == -1:
+        return 2 ** 31 - 1
+
+    negative = 1 if dividend ^ divisor >= 0 else -1
+    dividend, divisor = abs(dividend), abs(divisor)
+    res = 0
+    for i in range(31, -1, -1):
+        if (dividend >> i) >= divisor:
+            res += 1 << i
+            dividend -= divisor << i
+    return negative * res
+
+
+print(divide(1, 1))
+
 
 # 42.接雨水
 # def trap(height):  # 栈实现
