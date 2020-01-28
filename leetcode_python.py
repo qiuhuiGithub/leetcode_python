@@ -767,12 +767,46 @@ def searchRange(nums, target):  # 二分
 
 # print(searchRange([1], 1))
 
-#35. 搜索插入位置
+# 35. 搜索插入位置
 def searchInsert(nums, target):
     for i in range(len(nums)):
         if nums[i] >= target:
             return i
     return len(nums)
+
+
+# print(searchInsert([1,2,3,4],1)
+
+# 36.有效的数独
+def isValidSudoku(board):
+    rows = [[False for _ in range(9)] for _ in range(9)]
+    columns = [[False for _ in range(9)] for _ in range(9)]
+    boxs = [[False for _ in range(9)] for _ in range(9)]
+    for i in range(9):
+        for j in range(9):
+            if board[i][j] != '.':
+                box_index = (i // 3) * 3 + j // 3
+                num = int(board[i][j]) - 1
+                if rows[i][num] or columns[j][num] or boxs[box_index][num]:
+                    return False
+                else:
+                    rows[i][num], columns[j][num], boxs[box_index][num] = True, True, True
+    return True
+
+
+board = [
+    ["8", "3", ".", ".", "7", ".", ".", ".", "."],
+    ["6", ".", ".", "1", "9", "5", ".", ".", "."],
+    [".", "9", "8", ".", ".", ".", ".", "6", "."],
+    ["8", ".", ".", ".", "6", ".", ".", ".", "3"],
+    ["4", ".", ".", "8", ".", "3", ".", ".", "1"],
+    ["7", ".", ".", ".", "2", ".", ".", ".", "6"],
+    [".", "6", ".", ".", ".", ".", "2", "8", "."],
+    [".", ".", ".", "4", "1", "9", ".", ".", "5"],
+    [".", ".", ".", ".", "8", ".", ".", "7", "9"]
+]
+print(isValidSudoku(board))
+
 
 # 42.接雨水
 # def trap(height):  # 栈实现
