@@ -543,6 +543,39 @@ def swapPairs(head: ListNode) -> ListNode:
 #     print(result.val)
 #     result = result.next
 
+
+# 25. k个一组翻转链表
+def reverseKGroup(head: ListNode, k: int):
+    p_head = curr = ListNode(0)
+    while True:
+        count = k
+        stack = []
+        tmp = head
+        while count and tmp:
+            stack.append(tmp)
+            tmp = tmp.next
+            count -= 1
+        if count:  # 栈中个数小于k
+            curr.next = head
+            break
+        while stack:
+            curr.next = stack.pop()
+            curr = curr.next
+        curr.next = tmp
+        head = tmp
+    return p_head.next
+
+
+# l1 = ListNode(1)
+# l1.next = ListNode(2)
+# l1.next.next = ListNode(3)
+# l1.next.next.next = ListNode(4)
+# result = reverseKGroup(l1, 2)
+# while result:
+#     print(result.val)
+#     result = result.next
+
+
 # 26. 删除排序数组中的重复项
 def removeDuplicates(nums):
     if not nums:
@@ -555,7 +588,7 @@ def removeDuplicates(nums):
     return i + 1
 
 
-# print(removeDuplicates([1, 1, 2, 2]))
+# print(removeDuplicates([1, 2, 2, 3]))
 
 
 # 27. 移除元素
@@ -602,8 +635,144 @@ def divide(dividend, divisor):
     return negative * res
 
 
-print(divide(1, 1))
+# print(divide(1, 1))
 
+# 30.串联所有单词的子串
+def findSubstring(s, words):
+    words.sort()
+    res = []
+    if not s or not words:
+        return res
+    word_len = len(words[0])
+    list_len = len(words)
+    substr_len = word_len * list_len
+    for i in range(0, len(s) - substr_len + 1):
+        sub_str = s[i:i + substr_len]
+        tmp = []
+        for j in range(0, len(sub_str), word_len):
+            tmp.append(sub_str[j:j + word_len])
+        tmp.sort()
+        if tmp == words:
+            res.append(i)
+    return res
+
+
+# print(findSubstring('abcdef',['ab','cd']))
+
+# 31.下一个排列
+def nextPermutation(nums):
+    i = len(nums) - 2
+    while i >= 0 and nums[i] >= nums[i + 1]:
+        i -= 1
+    if i >= 0:
+        j = len(nums) - 1
+        while j >= 0 and nums[j] <= nums[i]:
+            j -= 1
+        nums[i], nums[j] = nums[j], nums[i]
+    nums[i + 1:] = nums[i + 1:][::-1]
+
+
+# print(nextPermutation([1, 2, 3]))
+
+# 32.最长有效括号
+def longestValidParentheses(s):
+    longest = 0
+    if not s:
+        return longest
+    stack = [-1]
+    for i in range(len(s)):
+        if s[i] == '(':
+            stack.append(i)
+        else:
+            stack.pop()
+            if not stack:
+                stack.append(i)
+            else:
+                longest = max(longest, i - stack[-1])
+    return longest
+
+
+# print(longestValidParentheses(')()()'))
+
+# 33. 搜索旋转排序数组
+def search(nums, target):
+    if not nums:
+        return -1
+    left, right = 0, len(nums) - 1
+    mid = left + (right - left) // 2
+    while left <= right:
+        if nums[mid] == target:
+            return mid
+        if nums[left] <= nums[mid]:
+            if nums[left] <= target <= nums[mid]:
+                right = mid - 1
+            else:
+                left = mid + 1
+        else:
+            if nums[mid] <= target <= nums[right]:
+                left = mid + 1
+            else:
+                right = mid - 1
+        mid = left + (right - left) // 2
+    return -1
+
+
+# print(search([4, 5, 6, 7, 0, 1, 2], 0))
+
+# 34.在排序数组中查找元素的第一个和最后一个位置
+# def searchRange(nums, target):  #双指针
+#     if not nums:
+#         return [-1, -1]
+#     left, right = 0, len(nums) - 1
+#     start, end = -1, -1
+#     while left <= right:
+#         if nums[left] == target:
+#             start = left
+#         elif nums[left] < target:
+#             left += 1
+#         else:
+#             return [-1, -1]
+#         if nums[right] == target:
+#             end = right
+#         elif nums[right] > target:
+#             right -= 1
+#         else:
+#             return [-1, -1]
+#         if start != -1 and end != -1:
+#             return [start, end]
+#     return [-1, -1]
+
+def searchRange(nums, target):  # 二分
+    if not nums:
+        return [-1, -1]
+    left, right = 0, len(nums) - 1
+    while left < right:
+        mid = left + (right - left) // 2
+        if nums[mid] >= target:
+            right = mid
+        else:
+            left = mid + 1
+    if nums[left] != target:
+        return [-1, -1]
+    start, right = left, len(nums)
+    while left < right:
+        mid = left + (right - left) // 2
+        if nums[mid] <= target:
+            left = mid + 1
+        else:
+            right = mid
+    end = left - 1
+    return [start, end]
+
+
+# print(searchRange([1], 1))
+
+#35. 搜索插入位置
+def searchInsert(nums, target):
+    for i in range(len(nums)):
+        if nums[i] >= target:
+            return i
+    return len(nums)
 
 # 42.接雨水
 # def trap(height):  # 栈实现
