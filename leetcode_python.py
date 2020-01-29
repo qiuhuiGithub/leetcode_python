@@ -805,7 +805,76 @@ board = [
     [".", ".", ".", "4", "1", "9", ".", ".", "5"],
     [".", ".", ".", ".", "8", ".", ".", "7", "9"]
 ]
-print(isValidSudoku(board))
+
+
+# print(isValidSudoku(board))
+
+# 37.解数独
+
+# 38.外观数列
+def countAndSay(n):
+    s = '1'
+    while n > 1:
+        s += '0'
+        tmp = ''
+        cnt = 1
+        for i in range(len(s) - 1):
+            if s[i] == s[i + 1]:
+                cnt += 1
+            else:
+                tmp += str(cnt) + str(s[i])
+                cnt = 1
+        s = tmp
+        n -= 1
+    return s
+
+
+# print(countAndSay(3))
+
+# 39.组合总和
+def combinationSum(candidates, target):
+    res = []
+
+    def backtrack(start, path, target):
+        if target < 0:
+            return
+        if target == 0:
+            res.append(path[:])
+        for i in range(start, len(candidates)):
+            path.append(candidates[i])
+            backtrack(i, path, target - candidates[i])
+            path.pop()
+
+    backtrack(0, [], target)
+    return res
+
+
+# print(combinationSum([2, 3, 6, 7], 7))
+
+# 40.组合总和II
+
+def combinationSum2(candidates, target):
+    res = []
+    candidates.sort()
+
+    def backtrack(start, path, target):
+        if target < 0:
+            return
+        if target == 0:
+            res.append(path[:])
+            return
+        for i in range(start, len(candidates)):
+            if i > start and candidates[i] == candidates[i - 1]:
+                continue
+            path.append(candidates[i])
+            backtrack(i + 1, path, target - candidates[i])
+            path.pop()
+
+    backtrack(0, [], target)
+    return res
+
+
+print(combinationSum2([2, 5, 2, 1, 2], 5))
 
 
 # 42.接雨水
@@ -854,6 +923,29 @@ def multiply(num1, num2):
         mul = res * int(num1) * (10 ** (len(num2) - i - 1))
         ans = addStrings(ans, str(mul))
     return ans
+
+
+# 46.全排列
+def permute(nums):
+    res = []
+
+    def backtrack(path, nums):
+        if len(path) == len(nums):
+            res.append(path.copy())
+            return
+
+        for num in nums:
+            if num in path:
+                continue
+            path.append(num)
+            backtrack(path, nums)
+            path.pop()
+
+    backtrack([], nums)
+    return res
+
+
+# print(permute([1, 2, 3]))
 
 
 # 415.字符串相加
