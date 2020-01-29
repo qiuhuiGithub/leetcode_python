@@ -874,7 +874,7 @@ def combinationSum2(candidates, target):
     return res
 
 
-print(combinationSum2([2, 5, 2, 1, 2], 5))
+# print(combinationSum2([2, 5, 2, 1, 2], 5))
 
 
 # 42.接雨水
@@ -946,6 +946,81 @@ def permute(nums):
 
 
 # print(permute([1, 2, 3]))
+
+# 47.全排列II
+def permuteUnique(nums):
+    res = []
+
+    def backtrack(path, nums):
+        if len(nums) == 0:
+            tmp = path[:]
+            if tmp not in res:
+                res.append(tmp)
+        for i in range(len(nums)):
+            path.append(nums[i])
+            backtrack(path, nums[0:i] + nums[i + 1:])
+            path.pop()
+
+    backtrack([], nums)
+    return res
+
+
+# print(permuteUnique([1, 2, 2]))
+
+# 48.旋转图像
+def rotate(matrix):  # 先转置，后翻转
+    if not matrix:
+        return
+    n = len(matrix)
+    for i in range(n):
+        for j in range(i, n):
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+    for i in range(n):
+        for j in range(n // 2):
+            matrix[i][j], matrix[i][n - 1 - j] = matrix[i][n - 1 - j], matrix[i][j]
+    return matrix
+
+
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+
+
+# print(rotate(matrix))
+
+
+# 49.字母异位词分组
+def groupAnagrams(strs):
+    if not strs:
+        return []
+    dic = {}
+    for word in strs:
+        tmp = ''.join(sorted(word))
+        if tmp in dic.keys():
+            dic[tmp].append(word)
+        else:
+            dic[tmp] = [word]
+    return list(dic.values())
+
+
+# print(groupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"]))
+
+# 50. Pow(x,n)
+def myPow(x, n):
+    if n == 0:
+        return 1
+    if n == 1:
+        return x
+    if n == -1:
+        return 1 / x
+    half = myPow(x, n // 2)
+    rest = myPow(x, n % 2)
+    return half * half * rest
+
+
+print(myPow(2, 5))
 
 
 # 415.字符串相加
