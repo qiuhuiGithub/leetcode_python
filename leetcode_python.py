@@ -795,7 +795,7 @@ def isValidSudoku(board):
 
 
 board = [
-    ["8", "3", ".", ".", "7", ".", ".", ".", "."],
+    ["5", "3", ".", ".", "7", ".", ".", ".", "."],
     ["6", ".", ".", "1", "9", "5", ".", ".", "."],
     [".", "9", "8", ".", ".", ".", ".", "6", "."],
     ["8", ".", ".", ".", "6", ".", ".", ".", "3"],
@@ -810,6 +810,55 @@ board = [
 # print(isValidSudoku(board))
 
 # 37.解数独
+def solveSudoku(board):
+    def backtrack(board, i, j):
+        while board[i][j] != '.':
+            if j == 8:
+                i += 1
+                j = 0
+            else:
+                j += 1
+            if i >= 9:
+                return True
+        for num in range(9):
+            block_index = (i // 3) * 3 + j // 3
+            if not row[i][num] and not col[j][num] and not block[block_index][num]:
+                board[i][j] = str(num + 1)
+                row[i][num] = True
+                col[j][num] = True
+                block[block_index][num] = True
+                if backtrack(board, i, j):
+                    return True
+                else:
+                    board[i][j] = '.'
+                    row[i][num] = False
+                    col[j][num] = False
+                    block[block_index][num] = False
+        return False
+
+    row = [[False for _ in range(9)] for _ in range(9)]
+    col = [[False for _ in range(9)] for _ in range(9)]
+    block = [[False for _ in range(9)] for _ in range(9)]
+    for i in range(9):
+        for j in range(9):
+            if board[i][j] != '.':
+                block_index = (i // 3 * 3) + (j // 3)
+                num = int(board[i][j]) - 1
+                row[i][num] = True
+                col[j][num] = True
+                block[block_index][num] = True
+    backtrack(board, 0, 0)
+
+
+board = [["5", "3", ".", ".", "7", ".", ".", ".", "."], ["6", ".", ".", "1", "9", "5", ".", ".", "."],
+         [".", "9", "8", ".", ".", ".", ".", "6", "."], ["8", ".", ".", ".", "6", ".", ".", ".", "3"],
+         ["4", ".", ".", "8", ".", "3", ".", ".", "1"], ["7", ".", ".", ".", "2", ".", ".", ".", "6"],
+         [".", "6", ".", ".", ".", ".", "2", "8", "."], [".", ".", ".", "4", "1", "9", ".", ".", "5"],
+         [".", ".", ".", ".", "8", ".", ".", "7", "9"]]
+
+
+# print(solveSudoku(board))
+
 
 # 38.外观数列
 def countAndSay(n):
@@ -876,6 +925,32 @@ def combinationSum2(candidates, target):
 
 # print(combinationSum2([2, 5, 2, 1, 2], 5))
 
+# 41.缺失的第一个正数
+def firstMissingPositive(nums):
+    if not nums or 1 not in nums:
+        return 1
+    if nums == [1]:
+        return 2
+    n = len(nums)
+    for i in range(n):
+        if nums[i] > n or nums[i] <= 0:
+            nums[i] = 1
+    for i in range(n):
+        idx = abs(nums[i])
+        if idx == n:
+            nums[0] = -abs(nums[0])
+        else:
+            nums[idx] = -abs(nums[idx])
+    for i in range(1, n):
+        if nums[i] > 0:
+            return i
+    if nums[0] > 0:
+        return n
+    return n + 1
+
+
+# print(firstMissingPositive([0, -1, 3, 1]))
+
 
 # 42.接雨水
 # def trap(height):  # 栈实现
@@ -923,6 +998,47 @@ def multiply(num1, num2):
         mul = res * int(num1) * (10 ** (len(num2) - i - 1))
         ans = addStrings(ans, str(mul))
     return ans
+
+
+# 44.通配符匹配
+def isMatch(s, p):
+    """
+    dp[i][j] = dp[i-1][j-1] if s[i] == p[j] or p[j] == '?'
+    dp[i][j] = dp[i-1][j] || dp[i][j-1] if p[j] == '*'
+    :param s:
+    :param p:
+    :return:
+    """
+    m, n = len(s), len(p)
+    dp = [[False for _ in range(n + 1)] for _ in range(m + 1)]
+    dp[0][0] = True
+    for j in range(1, n + 1):
+        dp[0][j] = dp[0][j - 1] and p[j - 1] == '*'
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if s[i - 1] == p[j - 1] or p[j - 1] == '?':
+                dp[i][j] = dp[i - 1][j - 1]
+            if p[j - 1] == '*':
+                dp[i][j] = dp[i - 1][j] or dp[i][j - 1]
+    return dp[m][n]
+
+
+print(isMatch('aa', 'a?'))
+
+
+# 45.跳跃游戏II
+def jump(nums):
+    end, max_pos, step = 0, 0, 0
+    for i in range(len(nums) - 1):
+        max_pos = max(max_pos, nums[i] + i)
+        if i == end:
+            end = max_pos
+            step += 1
+    return step
+
+
+# print(jump([2, 3, 1, 1, 4]))
 
 
 # 46.全排列
@@ -1020,7 +1136,118 @@ def myPow(x, n):
     return half * half * rest
 
 
-print(myPow(2, 5))
+# print(myPow(2, 5))
+
+
+# 51.N皇后
+def solveNQueens(n):
+    def isValidNQueens(board, row, col):
+        # 检查列是否合法
+        for i in range(row):
+            if board[i][col] == 'Q':
+                return False
+
+        # 检查右对角线是否合法
+        i, j = row - 1, col + 1
+        while i >= 0 and j < n:
+            if board[i][j] == 'Q':
+                return False
+            i, j = i - 1, j + 1
+
+        # 检查左对角线适合合法
+        i, j = row - 1, col - 1
+        while i >= 0 and j >= 0:
+            if board[i][j] == 'Q':
+                return False
+            i, j = i - 1, j - 1
+
+        return True
+
+    def backtrack(board, row):
+        if row == len(board):
+            tmp = []
+            for item in board:
+                tmp.append(''.join(item))
+            res.append(tmp)
+        for col in range(len(board)):
+            if not isValidNQueens(board, row, col):
+                continue
+            board[row][col] = 'Q'
+            backtrack(board, row + 1)
+            board[row][col] = '.'
+
+    res = []
+    board = [['.' for _ in range(n)] for _ in range(n)]
+    backtrack(board, 0)
+    return res
+
+
+# print(solveNQueens(4))
+
+
+# 52.N皇后II
+def totalNQueens(n):
+    def isValidNQueens(board, row, col):
+        # 检查列是否合法
+        for i in range(row):
+            if board[i][col] == 'Q':
+                return False
+
+        # 检查右对角线是否合法
+        i, j = row - 1, col + 1
+        while i >= 0 and j < n:
+            if board[i][j] == 'Q':
+                return False
+            i, j = i - 1, j + 1
+
+        # 检查左对角线适合合法
+        i, j = row - 1, col - 1
+        while i >= 0 and j >= 0:
+            if board[i][j] == 'Q':
+                return False
+            i, j = i - 1, j - 1
+
+        return True
+
+    def backtrack(board, row):
+        if row == len(board):
+            tmp = []
+            for item in board:
+                tmp.append(''.join(item))
+            res.append(tmp)
+        for col in range(len(board)):
+            if not isValidNQueens(board, row, col):
+                continue
+            board[row][col] = 'Q'
+            backtrack(board, row + 1)
+            board[row][col] = '.'
+
+    res = []
+    board = [['.' for _ in range(n)] for _ in range(n)]
+    backtrack(board, 0)
+    return len(res)
+
+
+# print(totalNQueens(4))
+
+# 72.编辑距离
+def minDistance(word1, word2):
+    m, n = len(word1), len(word2)
+    dp = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
+    for i in range(m + 1):
+        dp[i][0] = i
+    for j in range(n + 1):
+        dp[0][j] = j
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if word1[i - 1] == word2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = 1 + min(dp[i - 1][j - 1], min(dp[i][j - 1], dp[i - 1][j]))
+    return dp[m][n]
+
+
+print(minDistance('horse', 'ros'))
 
 
 # 415.字符串相加
