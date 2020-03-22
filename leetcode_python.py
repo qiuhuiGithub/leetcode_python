@@ -6,6 +6,13 @@ class ListNode:
         self.next = None
 
 
+class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+
 # 1. two sum
 def twoSum(nums, target):
     for i in range(len(nums) - 1):
@@ -1024,7 +1031,7 @@ def isMatch(s, p):
     return dp[m][n]
 
 
-print(isMatch('aa', 'a?'))
+# print(isMatch('aa', 'a?'))
 
 
 # 45.跳跃游戏II
@@ -1247,7 +1254,239 @@ def minDistance(word1, word2):
     return dp[m][n]
 
 
-print(minDistance('horse', 'ros'))
+# print(minDistance('horse', 'ros'))
+
+# 98. 验证二叉搜索树
+def isValidBST(root):
+    """
+    :type root: TreeNode
+    :rtype: bool
+    """
+
+    def valid(node, min, max):
+        if not node:
+            return True
+        if node.val <= min or node.val >= max:
+            return False
+        return valid(node.left, min, node.val) and valid(node.right, node.val, max)
+
+    return valid(root, -2 ** 31 - 1, 2 ** 31)
+
+
+tree = TreeNode(3)
+tree.left = TreeNode(1)
+tree.right = TreeNode(4)
+
+
+# print(isValidBST(tree))
+
+
+# 100. 相同的树
+def isSameTree(p, q):
+    """
+    :type p: TreeNode
+    :type q: TreeNode
+    :rtype: bool
+    """
+    if not p and not q:
+        return True
+    if not p or not q:
+        return False
+    if p.val == q.val:
+        return isSameTree(p.left, q.left) and isSameTree(p.right, q.right)
+
+
+p = TreeNode(3)
+p.left = TreeNode(1)
+q = TreeNode(3)
+q.right = TreeNode(1)
+
+
+# print(isSameTree(p, q))
+
+
+# 101. 对称二叉树
+def isSymmetric(root):
+    """
+    :type root: TreeNode
+    :rtype: bool
+    """
+
+    def isMirror(left, right):
+        if not left and not right:
+            return True
+        if left and right and left.val == right.val:
+            return isMirror(left.left, right.right) and isMirror(left.right, right.left)
+        return False
+
+    return isMirror(root, root)
+
+
+tree = TreeNode(3)
+tree.left = TreeNode(1)
+tree.right = TreeNode(3)
+
+
+# print(isSymmetric(tree))
+
+
+# 104. 二叉树的最大深度
+def maxDepth(root):
+    """
+    :type root: TreeNode
+    :rtype: int
+    """
+    if not root:
+        return 0
+    return max(maxDepth(root.left), maxDepth(root.right)) + 1
+
+
+tree = TreeNode(3)
+tree.left = TreeNode(1)
+tree.right = TreeNode(3)
+
+
+# print(maxDepth(tree))
+
+
+# 105. 从前序与中序遍历序列构造二叉树
+def buildTree(preorder, inorder):
+    """
+    :type preorder: List[int]
+    :type inorder: List[int]
+    :rtype: TreeNode
+    """
+    if not inorder:
+        return
+    mid = inorder.index(preorder[0])
+    root = TreeNode(preorder[0])
+    root.left = buildTree(preorder[1:mid + 1], inorder[:mid])
+    root.right = buildTree(preorder[mid + 1:], inorder[mid + 1:])
+
+
+# buildTree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7])
+
+
+# 106. 从中序与后序遍历序列构造二叉树
+def buildTree_1(inorder, postorder):
+    """
+    :type inorder: List[int]
+    :type postorder: List[int]
+    :rtype: TreeNode
+    """
+    if not inorder:
+        return
+    length = len(postorder)
+    root = TreeNode(postorder[length - 1])
+    mid = inorder.index(postorder[length - 1])
+    root.left = buildTree_1(inorder[:mid], postorder[:mid])
+    root.right = buildTree_1(inorder[mid + 1:], postorder[mid:length - 1])
+
+
+buildTree_1([9, 3, 15, 20, 7], [9, 15, 7, 20, 3])
+
+
+# 107. 二叉树的层序遍历 II
+def levelOrderBottom(root):
+    """
+    :type root: TreeNode
+    :rtype: List[List[int]]
+    """
+    res = []
+    if not root:
+        return res
+    queue = []
+    queue.append(root)
+    while queue:
+        level = []
+        for i in range(len(queue)):
+            node = queue.pop(0)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+            level.append(node.val)
+        res.append(level)
+    return res[::-1]
+
+
+# print(levelOrderBottom(tree))
+
+# 112. 路径总和
+def hasPathSum(root, sum):
+    """
+    :type root: TreeNode
+    :type sum: int
+    :rtype: bool
+    """
+    if not root:
+        return False
+    if not root.left and not root.right:
+        return sum - root.val == 0
+    return hasPathSum(root.left, sum - root.val) or hasPathSum(root.right, sum - root.val)
+
+
+# print(hasPathSum(tree, 4))
+
+# 113. 路径总和
+def pathSum(root, sum):
+    """
+    :type root: TreeNode
+    :type sum: int
+    :rtype: List[List[int]]
+    """
+    res = []
+    if not root:
+        return res
+
+    def backtrack(root, path, sum):
+        if not root:
+            return
+        sum -= root.val
+        path.append(root.val)
+        if not root.left and not root.right and sum == 0:
+            res.append(path[:])
+        backtrack(root.left, path[:], sum)
+        backtrack(root.right, path[:], sum)
+
+    backtrack(root, [], sum)
+    return res
+
+
+# print(pathSum(tree, 4))
+
+# 200.岛屿数量
+def numIslands(grid):
+    """
+    :type grid: List[List[str]]
+    :rtype: int
+    """
+
+    def dfs(grid, row, col):
+        grid[row][col] = '0'
+        if row - 1 >= 0 and grid[row - 1][col] == '1':
+            dfs(grid, row - 1, col)
+        if row + 1 < len(grid) and grid[row + 1][col] == '1':
+            dfs(grid, row + 1, col)
+        if col - 1 >= 0 and grid[row][col - 1] == '1':
+            dfs(grid, row, col - 1)
+        if col + 1 < len(grid[0]) and grid[row][col + 1] == '1':
+            dfs(grid, row, col + 1)
+
+    if not grid:
+        return 0
+    length, width = len(grid), len(grid[0])
+    num = 0
+    for i in range(length):
+        for j in range(width):
+            if grid[i][j] == '1':
+                num += 1
+                dfs(grid, i, j)
+    return num
+
+
+grid = [list('11110'), list('11010'), list('11000'), list('00000')]
+print(numIslands(grid))
 
 
 # 415.字符串相加
