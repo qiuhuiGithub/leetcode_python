@@ -1237,6 +1237,37 @@ def totalNQueens(n):
 
 # print(totalNQueens(4))
 
+# 面试题68. 二叉树的最近公共祖先
+def lowestCommonAncestor(root, p, q):
+    """
+    :type root: TreeNode
+    :type p: TreeNode
+    :type q: TreeNode
+    :rtype: TreeNode
+    """
+    if not root:
+        return None
+    if p == root or q == root:
+        return root
+    left = lowestCommonAncestor(root.left, p, q)
+    right = lowestCommonAncestor(root.right, p, q)
+    if left and right:
+        return root
+    if left:
+        return left
+    if right:
+        return right
+    return None
+
+
+tree = TreeNode(1)
+tree.left = TreeNode(2)
+tree.right = TreeNode(3)
+
+
+# print(lowestCommonAncestor(tree, tree.left, tree.right))
+
+
 # 72.编辑距离
 def minDistance(word1, word2):
     m, n = len(word1), len(word2)
@@ -1329,6 +1360,60 @@ tree.right = TreeNode(3)
 
 # print(isSymmetric(tree))
 
+# 102. 二叉树的层序遍历
+def levelOrder(root):
+    """
+    :type root: TreeNode
+    :rtype: List[List[int]]
+    """
+    res = []
+    if not root:
+        return []
+    queue = []
+    queue.append(root)
+    while queue:
+        level = []
+        for i in range(len(queue)):
+            node = queue.pop(0)
+            level.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        res.append(level)
+    return res
+
+
+# print(levelOrder(tree))
+
+# 103. 二叉树的锯齿形遍历
+def zigzagLevelOrder(root):
+    """
+    :type root: TreeNode
+    :rtype: List[List[int]]
+    """
+    res = []
+    if not root:
+        return []
+    queue = []
+    queue.append(root)
+    flag = False
+    while queue:
+        level = []
+        flag = not flag
+        for i in range(len(queue)):
+            node = queue.pop(0)
+            level.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        res.append(level if flag else level[::-1])
+    return res
+
+
+print(zigzagLevelOrder(tree))
+
 
 # 104. 二叉树的最大深度
 def maxDepth(root):
@@ -1383,7 +1468,7 @@ def buildTree_1(inorder, postorder):
     root.right = buildTree_1(inorder[mid + 1:], postorder[mid:length - 1])
 
 
-buildTree_1([9, 3, 15, 20, 7], [9, 15, 7, 20, 3])
+# buildTree_1([9, 3, 15, 20, 7], [9, 15, 7, 20, 3])
 
 
 # 107. 二叉树的层序遍历 II
@@ -1411,6 +1496,37 @@ def levelOrderBottom(root):
 
 
 # print(levelOrderBottom(tree))
+
+
+# 111. 二叉树的最小深度
+def minDepth(root):
+    """
+    :type root: TreeNode
+    :rtype: int
+    """
+    if not root:
+        return 0
+    queue = [root]
+    depth = 1
+    while queue:
+        for i in range(len(queue)):
+            node = queue.pop(0)
+            if not node.left and not node.right:
+                return depth
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        depth += 1
+
+
+tree = TreeNode(1)
+tree.left = TreeNode(2)
+tree.right = TreeNode(3)
+tree.left.left = TreeNode(4)
+tree.left.right = TreeNode(5)
+print(minDepth(tree))
+
 
 # 112. 路径总和
 def hasPathSum(root, sum):
@@ -1455,6 +1571,116 @@ def pathSum(root, sum):
 
 # print(pathSum(tree, 4))
 
+# 127.单词接龙
+def ladderLength(beginWord, endWord, wordList):
+    """
+    :type beginWord: str
+    :type endWord: str
+    :type wordList: List[str]
+    :rtype: int
+    """
+    # 单向BFS，过不了
+    # q = [beginWord]
+    # res = 0
+    # while q:
+    #     res += 1
+    #     for sz in range(len(q)):
+    #         hop = q.pop(0)
+    #         if hop == endWord:
+    #             return res
+    #         for idx in range(len(wordList)):
+    #             if not wordList[idx]:
+    #                 continue
+    #             diff = 0
+    #             for i in range(len(wordList[idx])):
+    #                 if wordList[idx][i] != hop[i]:
+    #                     diff += 1
+    #                 if diff > 1:
+    #                     break
+    #             if diff <= 1:
+    #                 q.append(wordList[idx])
+    #                 wordList[idx] = ""
+    # return 0
+
+    # 双向BFS
+    if endWord not in wordList:
+        return 0
+    wordSet = set(wordList)
+    head, tail = {beginWord}, {endWord}
+    tmp = list('abcdefghijklmnopqrstuvwxyz')
+    res = 1
+    while head:
+        if len(head) > len(tail):
+            head, tail = tail, head
+        q = set()
+        for cur in head:
+            for i in range(len(cur)):
+                for j in tmp:
+                    word = cur[:i] + j + cur[i + 1:]
+                    if word in tail:
+                        return res + 1
+                    if word in wordSet:
+                        q.add(word)
+                        wordSet.remove(word)
+        head = q
+        res += 1
+    return 0
+
+
+# print(ladderLength("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]))
+
+# 130.被围绕的区域
+def solve(board):
+    """
+    :type board: List[List[str]]
+    :rtype: None Do not return anything, modify board in-place instead.
+    """
+    if not board:
+        return
+    row, col = len(board), len(board[0])
+
+    def bfs(i, j):
+        queue = [(i, j)]
+        while queue:
+            (t_i, t_j) = queue.pop(0)
+            if 0 <= t_i < len(board) and 0 <= t_j < len(board[0]) and board[t_i][t_j] == 'O':
+                board[t_i][t_j] = 'B'
+                for (r, c) in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                    queue.append((t_i + r, t_j + c))
+
+    def dfs(i, j):
+        board[i][j] = 'B'
+        for (r, c) in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            t_i, t_j = i + r, j + c
+            if 0 <= t_i < len(board) and 0 <= t_j < len(board[0]) and board[t_i][t_j] == 'O':
+                dfs(t_i, t_j)
+
+    for i in range(row):
+        if board[i][0] == 'O':
+            dfs(i, 0)
+        if board[i][col - 1] == 'O':
+            dfs(i, col - 1)
+    for j in range(col):
+        if board[0][j] == 'O':
+            dfs(0, j)
+        if board[row - 1][j] == 'O':
+            dfs(row - 1, j)
+    for i in range(row):
+        for j in range(col):
+            if board[i][j] == 'O':
+                board[i][j] = 'X'
+            if board[i][j] == 'B':
+                board[i][j] = 'O'
+
+
+board = [['O', 'O', 'O'],
+         ['O', 'O', 'O'],
+         ['O', 'O', 'O']]
+
+solve(board)
+print(board)
+
+
 # 200.岛屿数量
 def numIslands(grid):
     """
@@ -1486,7 +1712,9 @@ def numIslands(grid):
 
 
 grid = [list('11110'), list('11010'), list('11000'), list('00000')]
-print(numIslands(grid))
+
+
+# print(numIslands(grid))
 
 
 # 415.字符串相加
