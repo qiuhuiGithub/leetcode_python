@@ -1412,7 +1412,7 @@ def zigzagLevelOrder(root):
     return res
 
 
-print(zigzagLevelOrder(tree))
+# print(zigzagLevelOrder(tree))
 
 
 # 104. 二叉树的最大深度
@@ -1525,7 +1525,9 @@ tree.left = TreeNode(2)
 tree.right = TreeNode(3)
 tree.left.left = TreeNode(4)
 tree.left.right = TreeNode(5)
-print(minDepth(tree))
+
+
+# print(minDepth(tree))
 
 
 # 112. 路径总和
@@ -1570,6 +1572,52 @@ def pathSum(root, sum):
 
 
 # print(pathSum(tree, 4))
+
+# 121. 买卖股票的最佳时机
+def maxProfit(prices):
+    """
+    :type prices: List[int]
+    :rtype: int
+    """
+    min_price = 2 ** 31 - 1
+    max_profit = 0
+    for price in prices:
+        max_profit = max(price - min_price, max_profit)
+        min_price = min(min_price, price)
+    return max_profit
+
+
+# 122. 买卖股票的最佳时机 II
+def maxProfit(prices):
+    """
+    :type prices: List[int]
+    :rtype: int
+    """
+    max_profit = 0
+    for i in range(1, len(prices)):
+        if prices[i] - prices[i - 1] > 0:
+            max_profit += prices[i] - prices[i - 1]
+    return max_profit
+
+
+# 123. 买卖股票的最佳时机 II
+def maxProfit(prices):
+    """
+    :type prices: List[int]
+    :rtype: int
+    """
+    first_buy, first_sell = -2 ** 31, 0
+    second_buy, second_sell = -2 ** 31, 0
+    for price in prices:
+        first_buy = max(first_buy, -price)
+        first_sell = max(first_sell, price + first_buy)
+        second_buy = max(second_buy, first_sell - price)
+        second_sell = max(second_sell, price + second_buy)
+    return second_sell
+
+
+# print(maxProfit([7, 1, 5, 3, 6, 4]))
+
 
 # 127.单词接龙
 def ladderLength(beginWord, endWord, wordList):
@@ -1657,14 +1705,14 @@ def solve(board):
 
     for i in range(row):
         if board[i][0] == 'O':
-            dfs(i, 0)
+            bfs(i, 0)
         if board[i][col - 1] == 'O':
-            dfs(i, col - 1)
+            bfs(i, col - 1)
     for j in range(col):
         if board[0][j] == 'O':
-            dfs(0, j)
+            bfs(0, j)
         if board[row - 1][j] == 'O':
-            dfs(row - 1, j)
+            bfs(row - 1, j)
     for i in range(row):
         for j in range(col):
             if board[i][j] == 'O':
@@ -1673,12 +1721,130 @@ def solve(board):
                 board[i][j] = 'O'
 
 
-board = [['O', 'O', 'O'],
-         ['O', 'O', 'O'],
-         ['O', 'O', 'O']]
+board = [["O", "O", "O", "O", "X", "X"],
+         ["O", "O", "O", "O", "O", "O"],
+         ["O", "X", "O", "X", "O", "O"],
+         ["O", "X", "O", "O", "X", "O"],
+         ["O", "X", "O", "X", "O", "O"],
+         ["O", "X", "O", "O", "O", "O"]]
 
 solve(board)
-print(board)
+
+
+# print(board)
+
+
+# 134.加油站
+def canCompleteCircuit(gas, cost):
+    """
+    :type gas: List[int]
+    :type cost: List[int]
+    :rtype: int
+    """
+    if not gas or not cost or len(gas) != len(cost):
+        return -1
+    start, sum, total = 0, 0, 0
+    for i in range(len(gas)):
+        sum += gas[i] - cost[i]
+        total += gas[i] - cost[i]
+        if sum < 0:
+            start = i + 1
+            sum = 0
+    return start if total >= 0 else -1
+
+
+# print(canCompleteCircuit([1, 2, 3, 4, 5], [3, 4, 5, 1, 2]))
+
+
+# 135. 分发糖果
+def candy(ratings):
+    """
+    :type ratings: List[int]
+    :rtype: int
+    """
+    if not ratings:
+        return 0
+    candy = [1] * len(ratings)
+    for i in range(len(ratings) - 1):
+        if ratings[i + 1] > ratings[i]:
+            candy[i + 1] = candy[i] + 1
+    for i in range(len(ratings) - 1, 0, -1):
+        if ratings[i - 1] > ratings[i] and candy[i - 1] <= candy[i]:
+            candy[i - 1] = candy[i] + 1
+    return sum(candy)
+
+
+# print(candy([1, 2, 87, 87, 87, 2, 1]))
+
+# 169.多数元素
+def majorityElement(nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+
+    # def partition(nums, left, right):
+    #     pivot = nums[left]
+    #     while left < right:
+    #         while left < right and nums[right] >= pivot:
+    #             right -= 1
+    #         nums[left] = nums[right]
+    #         while left < right and nums[left] < pivot:
+    #             left += 1
+    #         nums[right] = nums[left]
+    #     nums[left] = pivot
+    #     return left
+    #
+    # middle = len(nums) // 2
+    # index = partition(nums, 0, len(nums) - 1)
+    # while index != middle:
+    #     if index < middle:
+    #         index = partition(nums, index + 1, len(nums) - 1)
+    #     else:
+    #         index = partition(nums, 0, index - 1)
+    # return nums[index]
+    res, cnt = 0, 0
+    for num in nums:
+        if cnt == 0:
+            res = num
+            cnt += 1
+        else:
+            cnt = cnt + 1 if res == num else cnt - 1
+    return res
+
+
+print(majorityElement([1, 2, 1]))
+
+
+# 199. 二叉树的右视图
+def rightSideView(root):
+    """
+    :type root: TreeNode
+    :rtype: List[int]
+    """
+    res = []
+    if not root:
+        return res
+    queue = [root]
+    while queue:
+        sz = len(queue)
+        for i in range(sz):
+            node = queue.pop(0)
+            if i == sz - 1:
+                res.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+    return res
+
+
+tree = TreeNode(1)
+tree.left = TreeNode(2)
+tree.right = TreeNode(3)
+
+
+# print(rightSideView(tree))
 
 
 # 200.岛屿数量
@@ -1715,6 +1881,37 @@ grid = [list('11110'), list('11010'), list('11000'), list('00000')]
 
 
 # print(numIslands(grid))
+
+# 215. 数组中的第K个最大元素
+def findKthLargest(nums, k):
+    """
+    :type nums: List[int]
+    :type k: int
+    :rtype: int
+    """
+
+    def partition(nums, left, right):
+        pivot = nums[left]
+        while left < right:
+            while left < right and nums[right] >= pivot:
+                right -= 1
+            nums[left] = nums[right]
+            while left < right and nums[left] < pivot:
+                left += 1
+            nums[right] = nums[left]
+        nums[left] = pivot
+        return left
+
+    index = partition(nums, 0, len(nums) - 1)
+    while len(nums) - index != k:
+        if len(nums) - index < k:
+            index = partition(nums, 0, index - 1)
+        else:
+            index = partition(nums, index + 1, len(nums) - 1)
+    return nums[index]
+
+
+# print(findKthLargest([3, 2, 1, 5, 6, 4], 2))
 
 
 # 415.字符串相加
