@@ -1237,6 +1237,123 @@ def totalNQueens(n):
 
 # print(totalNQueens(4))
 
+
+# 53. 最大子序和
+def maxSubArray(nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    if not nums:
+        return 0
+    max_sum = nums[0]
+    for i in range(1, len(nums)):
+        if nums[i - 1] > 0:
+            nums[i] += nums[i - 1]
+        max_sum = max(max_sum, nums[i])
+    return max_sum
+
+
+nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+
+print(maxSubArray(nums))
+
+
+# 62. 不同路径
+def uniquePaths(m, n):
+    """
+    :type m: int
+    :type n: int
+    :rtype: int
+    """
+    if not m or not n:
+        return -1
+    dp = [[1] * n for _ in range(m)]
+    for i in range(1, m):
+        for j in range(1, n):
+            dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+    return dp[-1][-1]
+
+
+# print(uniquePaths(7,3))
+
+#  63. 不同路径II
+def uniquePathsWithObstacles(obstacleGrid):
+    """
+    :type obstacleGrid: List[List[int]]
+    :rtype: int
+    """
+    if not obstacleGrid:
+        return -1
+    m, n = len(obstacleGrid), len(obstacleGrid[0])
+    dp = [[0] * n for _ in range(m)]
+    dp[0][0] = 1
+    row_flag, col_flag = True, True
+    for i in range(m):
+        if obstacleGrid[i][0] == 0 and row_flag:
+            dp[i][0] = 1
+        else:
+            dp[i][0] = 0
+            row_flag = False
+
+    for j in range(n):
+        if obstacleGrid[0][j] == 0 and col_flag:
+            dp[0][j] = 1
+        else:
+            dp[0][j] = 0
+            col_flag = False
+    for i in range(1, m):
+        for j in range(1, n):
+            if obstacleGrid[i][j] == 1:
+                dp[i][j] = 0
+            elif obstacleGrid[i - 1][j] == 0 and obstacleGrid[i][j - 1] == 0:
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+            elif obstacleGrid[i - 1][j] == 1:
+                dp[i][j] = dp[i][j - 1]
+            elif obstacleGrid[i][j - 1] == 1:
+                dp[i][j] = dp[i - 1][j]
+    return dp[-1][-1]
+
+
+obstacleGrid = [
+    [0, 0],
+    [0, 1]
+]
+
+
+# print(uniquePathsWithObstacles(obstacleGrid))
+
+# 64. 最小路径和
+def minPathSum(grid):
+    """
+    :type grid: List[List[int]]
+    :rtype: int
+    """
+    if not grid:
+        return -1
+    row, col = len(grid), len(grid[0])
+    dp = [[0] * col for _ in range(row)]
+    dp[0][0] = grid[0][0]
+    for i in range(1, row):
+        dp[i][0] = dp[i - 1][0] + grid[i][0]
+    for j in range(1, col):
+        dp[0][j] = dp[0][j - 1] + grid[0][j]
+    for i in range(1, row):
+        for j in range(1, col):
+            dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j]
+    return dp[-1][-1]
+
+
+grid = [
+    [1, 3, 1],
+    [1, 5, 1],
+    [4, 2, 1]
+]
+
+
+# print(minPathSum(grid))
+
+
 # 面试题68. 二叉树的最近公共祖先
 def lowestCommonAncestor(root, p, q):
     """
@@ -1267,6 +1384,29 @@ tree.right = TreeNode(3)
 
 # print(lowestCommonAncestor(tree, tree.left, tree.right))
 
+# 70.爬楼梯
+def climbStairs(n):
+    """
+    :type n: int
+    :rtype: int
+    """
+    # if n == 1:
+    #     return 1
+    # if n == 2:
+    #     return 2
+    # return climbStairs(n - 1) + climbStairs(n - 1)
+    if n < 3:
+        return n
+    i1, i2 = 1, 2
+    for i in range(3, n + 1):
+        tmp = i1 + i2
+        i1 = i2
+        i2 = tmp
+    return i2
+
+
+# print(climbStairs(10))
+
 
 # 72.编辑距离
 def minDistance(word1, word2):
@@ -1286,6 +1426,34 @@ def minDistance(word1, word2):
 
 
 # print(minDistance('horse', 'ros'))
+
+# 74. 搜索二维矩阵
+def searchMatrix(matrix, target):
+    if not matrix or not matrix[0]:
+        return False
+    for i in range(len(matrix)):
+        if matrix[i][0] <= target <= matrix[i][-1]:
+            low, high = 0, len(matrix[i]) - 1
+            while low <= high:
+                mid = low + (high - low) // 2
+                if matrix[i][mid] == target:
+                    return True
+                if target < matrix[i][mid]:
+                    high = mid - 1
+                else:
+                    low = mid + 1
+    return False
+
+
+matrix = [
+    [1, 3, 5, 7],
+    [10, 11, 16, 20],
+    [23, 30, 34, 50]
+]
+
+
+# print(searchMatrix([[1]], 1))
+
 
 # 98. 验证二叉搜索树
 def isValidBST(root):
@@ -1573,6 +1741,29 @@ def pathSum(root, sum):
 
 # print(pathSum(tree, 4))
 
+# 120.三角形最小路径和
+def minimumTotal(triangle):
+    """
+    :type triangle: List[List[int]]
+    :rtype: int
+    """
+    if not triangle:
+        return 0
+    for i in range(len(triangle) - 2, -1, -1):
+        for j in range(len(triangle[i])):
+            triangle[i][j] += min(triangle[i + 1][j], triangle[i + 1][j + 1])
+    return triangle[0][0]
+
+
+triangle = [
+    [2],
+    [3, 4],
+    [6, 5, 7],
+    [4, 1, 8, 3]
+]
+print(minimumTotal(triangle))
+
+
 # 121. 买卖股票的最佳时机
 def maxProfit(prices):
     """
@@ -1776,6 +1967,58 @@ def candy(ratings):
 
 # print(candy([1, 2, 87, 87, 87, 2, 1]))
 
+# 139. 单词拆分
+def wordBreak(s, wordDict):
+    """
+    :type s: str
+    :type wordDict: List[str]
+    :rtype: bool
+    """
+    if not s or not wordDict:
+        return False
+    dp = [False] * (len(s) + 1)
+    dp[0] = True
+    for i in range(1, len(s) + 1):
+        for j in range(0, i):
+            if dp[j] and s[j:i] in wordDict:
+                dp[i] = True
+                break
+    return dp[-1]
+
+
+s = "leetcode"
+wordDict = ["leet", "code"]
+print(wordBreak(s, wordDict))
+
+
+# 153. 寻找旋转排序数组中的最小值
+def findMin(nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    if not nums:
+        return -1
+    if len(nums) == 1:
+        return nums[0]
+    if nums[0] < nums[-1]:
+        return nums[0]
+    low, high = 0, len(nums) - 1
+    while low <= high:
+        mid = low + (high - low) // 2
+        if nums[mid] > nums[mid + 1]:
+            return nums[mid + 1]
+        elif nums[mid - 1] > nums[mid]:
+            return nums[mid]
+        if nums[low] < nums[mid]:
+            low = mid + 1
+        else:
+            high = mid - 1
+
+
+# print(findMin([2, 1]))
+
+
 # 169.多数元素
 def majorityElement(nums):
     """
@@ -1813,7 +2056,25 @@ def majorityElement(nums):
     return res
 
 
-print(majorityElement([1, 2, 1]))
+# print(majorityElement([1, 2, 1]))
+
+# 198. 打家劫舍
+def rob(nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    if not nums:
+        return 0
+    if len(nums) == 1:
+        return nums[0]
+    nums[1] = max(nums[0], nums[1])
+    for i in range(2, len(nums)):
+        nums[i] = max(nums[i - 1], nums[i - 2] + nums[i])
+    return nums[-1]
+
+
+# print(rob([2, 1]))
 
 
 # 199. 二叉树的右视图
@@ -1882,6 +2143,38 @@ grid = [list('11110'), list('11010'), list('11000'), list('00000')]
 
 # print(numIslands(grid))
 
+
+# 213. 打家劫舍II
+def rob_2(nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+
+    def rob_helper(nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if not nums:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        nums[1] = max(nums[0], nums[1])
+        for i in range(2, len(nums)):
+            nums[i] = max(nums[i - 1], nums[i - 2] + nums[i])
+        return nums[-1]
+
+    if not nums:
+        return 0
+    if len(nums) == 1:
+        return nums[0]
+    return max(rob_helper(nums[1:]), rob_helper(nums[:-1]))
+
+
+print(rob_2([1,2]))
+
+
 # 215. 数组中的第K个最大元素
 def findKthLargest(nums, k):
     """
@@ -1913,6 +2206,52 @@ def findKthLargest(nums, k):
 
 # print(findKthLargest([3, 2, 1, 5, 6, 4], 2))
 
+# 221. 最大正方形
+def maximalSquare(matrix):
+    """
+    :type matrix: List[List[str]]
+    :rtype: int
+    """
+    if not matrix:
+        return 0
+    row, col = len(matrix), len(matrix[0])
+    dp = [[0] * (col + 1) for _ in range(row + 1)]
+    max_len = 0
+    for i in range(1, row + 1):
+        for j in range(1, col + 1):
+            if matrix[i - 1][j - 1] == '0':
+                continue
+            dp[i][j] = min(dp[i - 1][j - 1], min(dp[i - 1][j], dp[i][j - 1])) + 1
+            max_len = max(max_len, dp[i][j])
+    return max_len * max_len
+
+
+# matrix = [list('10100'), list('10111'), list('11111'), list('10010')]
+# print(maximalSquare(matrix))
+
+# 300. 最长上升子序列
+def lengthOfLIS(nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    if not nums:
+        return 0
+    dp = [1] * (len(nums))
+    for i in range(1, len(nums)):
+        cnt = 1
+        for j in range(i):
+            if nums[i] > nums[j]:
+                cnt = max(cnt, dp[j] + 1)
+        dp[i] = cnt
+    return max(dp)
+
+
+nums = [1, 2, 3]
+
+
+# print(lengthOfLIS(nums))
+
 
 # 415.字符串相加
 def addStrings(num1, num2):
@@ -1930,5 +2269,45 @@ def addStrings(num1, num2):
         j -= 1
     return ans[::-1]
 
+
 # print(addStrings("123", "956"))
 # print(multiply("123", "456"))
+
+# 1143.最长公共子序列
+def longestCommonSubsequence(text1, text2):
+    """
+    :type text1: str
+    :type text2: str
+    :rtype: int
+    """
+    if not text1 or not text2:
+        return 0
+    len1, len2 = len(text1), len(text2)
+    dp = [[0] * (len2 + 1) for _ in range(len1 + 1)]
+    for i in range(1, len1 + 1):
+        for j in range(1, len2 + 1):
+            if text1[i - 1] == text2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+    return dp[-1][-1]
+
+
+# 最长公共子串
+def longestCommonSubstring(text1, text2):
+    if not text1 or not text2:
+        return 0
+    len1, len2 = len(text1), len(text2)
+    dp = [[0] * (len2 + 1) for _ in range(len1 + 1)]
+    max_len = 0
+    for i in range(1, len1 + 1):
+        for j in range(1, len2 + 1):
+            if text1[i - 1] == text2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+                max_len = max(max_len, dp[i][j])
+            else:
+                dp[i][j] = 0
+    return max_len
+
+# print(longestCommonSubstring('abcde', 'abe'))
+# print(longestCommonSubsequence('abcde', 'ace'))

@@ -1,9 +1,19 @@
 # encoding=utf-8
 
+"""
+排序算法    平均时间复杂度   平均空间复杂度   稳定性
+冒泡排序    O(n²)           O(1)          稳定
+选择排序    O(n²)           O(1)          不稳定
+插入排序    O(n²)           O(1)          稳定
+希尔排序    O(nlogn)        O(1)          不稳定
+归并排序    O(nlogn)        O(n)          稳定
+快速排序    O(nlogn)        O(logn)       不稳定
+堆排序      O(nlogn)        O(1)          不稳定
+"""
+
 
 def bubble_sort(nums):
     """
-    冒泡排序
     :param nums:
     :return:
     """
@@ -184,3 +194,4 @@ if __name__ == "__main__":
     quick_sort(nums, 0, len(nums) - 1)
     # heap_sort(nums)
     print(nums)
+
