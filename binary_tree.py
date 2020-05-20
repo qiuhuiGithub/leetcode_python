@@ -373,3 +373,17 @@ def rightSideView(root):
             if node.right:
                 queue.append(node.right)
     return res
+
+# 543. 二叉树的直径
+class Solution(object):
+    def diameterOfBinaryTree(self, root):
+        self.ans = 1
+        def depth(node):
+            if not node:
+                return 0
+            L = depth(node.left)
+            R = depth(node.right)
+            self.ans = max(self.ans, L+R+1)
+            return max(L,R) + 1
+        depth(root)
+        return self.ans-1

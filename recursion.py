@@ -22,7 +22,7 @@ def climbStairs(n):
     #     return 1
     # if n == 2:
     #     return 2
-    # return climbStairs(n - 1) + climbStairs(n - 1)
+    # return climbStairs(n - 1) + climbStairs(n - 2)
     if n < 3:
         return n
     i1, i2 = 1, 2
@@ -31,3 +31,11 @@ def climbStairs(n):
         i1 = i2
         i2 = tmp
     return i2
+
+def move(s, n):
+    if not s:
+        return ''
+    n = n % len(s)
+    m = len(s) - n
+    s = s[n+1:] + s[0:m]
+    return s

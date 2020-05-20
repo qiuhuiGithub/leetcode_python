@@ -27,6 +27,7 @@ def findMedianSortedArrays(nums1, nums2):
     else:
         return nums3[len(nums3) // 2]
 
+
 # 11. 盛水最多的容器
 def maxArea(height):
     max_area = 0
@@ -39,6 +40,7 @@ def maxArea(height):
         else:
             j -= 1
     return max_area
+
 
 # 15. 三数之和
 def threeSum(nums):
@@ -67,6 +69,7 @@ def threeSum(nums):
                 right -= 1
     return res
 
+
 # 16.最接近的三数之和
 def threeSumClosest(nums, target):
     res = 2 ** 31 - 1
@@ -86,6 +89,7 @@ def threeSumClosest(nums, target):
             else:
                 return res
     return res
+
 
 # 18. 四数之和
 def fourSum(nums, target):
@@ -115,6 +119,7 @@ def fourSum(nums, target):
                     l -= 1
     return res
 
+
 # 26. 删除排序数组中的重复项
 def removeDuplicates(nums):
     if not nums:
@@ -125,6 +130,7 @@ def removeDuplicates(nums):
             i += 1
             nums[i] = nums[j]
     return i + 1
+
 
 # 27. 移除元素
 def removeElement(nums, val):
@@ -137,12 +143,14 @@ def removeElement(nums, val):
             i += 1
     return i
 
+
 # 35. 搜索插入位置
 def searchInsert(nums, target):
     for i in range(len(nums)):
         if nums[i] >= target:
             return i
     return len(nums)
+
 
 # 41.缺失的第一个正数
 def firstMissingPositive(nums):
@@ -167,6 +175,7 @@ def firstMissingPositive(nums):
         return n
     return n + 1
 
+
 # 42.接雨水
 def trap(height):
     left, right = 0, len(height) - 1
@@ -187,6 +196,7 @@ def trap(height):
             right -= 1
     return ans
 
+
 # 48.旋转图像
 def rotate(matrix):  # 先转置，后翻转
     if not matrix:
@@ -199,6 +209,7 @@ def rotate(matrix):  # 先转置，后翻转
         for j in range(n // 2):
             matrix[i][j], matrix[i][n - 1 - j] = matrix[i][n - 1 - j], matrix[i][j]
     return matrix
+
 
 # 53. 最大子序和
 def maxSubArray(nums):
@@ -215,3 +226,41 @@ def maxSubArray(nums):
         max_sum = max(max_sum, nums[i])
     return max_sum
 
+
+# 218. 天际线问题
+def getSkyline(buildings):
+    """
+    :type buildings: List[List[int]]
+    :rtype: List[List[int]]
+    """
+
+    res = []
+    if not buildings:
+        return res
+    height = []
+    for building in buildings:
+        height.append([building[0], -building[2]])
+        height.append([building[1], building[2]])
+    height.sort()
+
+    heap = [0]
+    prev = 0
+    for h in height:
+        if h[1] < 0:
+            heap.append(-h[1])
+        else:
+            heap.remove(h[1])
+        cur = max(heap)
+        if prev != cur:
+            res.append([h[0], cur])
+            prev = cur
+
+    final_res = [[height[0][0], 0]]
+    for i in range(len(res) - 1):
+        final_res.append(res[i])
+        final_res.append([res[i + 1][0], res[i][1]])
+    final_res.append(res[-1])
+    return final_res
+
+
+# print(getSkyline([[2, 9, 10], [3, 7, 15], [5, 12, 12], [15, 20, 10], [19, 24, 8]]))

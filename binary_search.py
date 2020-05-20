@@ -98,7 +98,6 @@ def searchRange(nums, target):  # 二分
     return [start, end]
 
 
-
 # 74. 搜索二维矩阵
 def searchMatrix(matrix, target):
     if not matrix or not matrix[0]:
@@ -162,10 +161,19 @@ def findKthLargest(nums, k):
         nums[left] = pivot
         return left
 
-    index = partition(nums, 0, len(nums) - 1)
-    while len(nums) - index != k:
-        if len(nums) - index < k:
-            index = partition(nums, 0, index - 1)
+    # target_k = len(nums) - k
+    target_k = k
+    low, high = 0, len(nums) - 1
+    if target_k == len(nums):
+        return nums
+    while True:
+        index = partition(nums, low, high)
+        if index == target_k:
+            return nums[:index]
+        elif index < target_k:
+            low = index + 1
         else:
-            index = partition(nums, index + 1, len(nums) - 1)
-    return nums[index]
+            high = index - 1
+
+
+print(findKthLargest([0, 0, 2, 3, 2, 1, 1, 2, 0, 4], 10))

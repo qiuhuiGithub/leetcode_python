@@ -15,6 +15,29 @@ def longestPalindrome(s):
     return s[left:right + 1]
 
 
+# 512. 最长回文子序列
+def longestPalindromeSubseq(s):
+    """
+    :type s: str
+    :rtype: int
+    """
+    if not s:
+        return 0
+    length = len(s)
+    dp = [[0 for _ in range(length)] for _ in range(length)]
+    for i in range(length - 1, -1, -1):
+        dp[i][i] = 1
+        for j in range(i + 1, length):
+            if s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1] + 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+    return dp[0][length - 1]
+
+
+# print(longestPalindromeSubseq('bbab'))
+
+
 # 10.正则表达式匹配
 class Solution():
     # def isMatch(self, text, pattern):  # 回溯
@@ -25,6 +48,8 @@ class Solution():
     #         return self.isMatch(text, pattern[2:]) or (first_match and self.isMatch(text[1:], pattern))
     #     else:
     #         return first_match and self.isMatch(text[1:], pattern[1:])
+    # dp[i][j] = dp[i][j+2] || (p[j]==t[i] or p[i]=='.') & dp[i+1][j] if p[j+1] == '*'
+    # dp[i][j] = dp[i+1][j+1] & (p[j]==t[i] or p[i]=='.') if p[j+1] != '*'
     def isMatch(self, text, pattern):  # 动态规划
         dp = [[False] * (len(pattern) + 1) for _ in range(len(text) + 1)]
         dp[-1][-1] = True
@@ -36,6 +61,10 @@ class Solution():
                 else:
                     dp[i][j] = first_match and dp[i + 1][j + 1]
         return dp[0][0]
+
+
+solution = Solution()
+# print(solution.isMatch('bb', 'b*'))
 
 
 # 1143.最长公共子序列
@@ -241,7 +270,28 @@ def wordBreak(s, wordDict):
     return dp[-1]
 
 
-print(wordBreak('leetcode', {'lee', 't', 'leet', 'code', 'leetcode'}))
+# print(wordBreak('leetcode', {'lee', 't', 'leet', 'code', 'leetcode'}))
+
+
+# 152. 乘积最大的子数组
+def maxProduct(nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    if not nums:
+        return 0
+    length = len(nums)
+    max_dp, min_dp = [0 for _ in range(length)], [0 for _ in range(length)]
+    max_dp[0] = nums[0]
+    min_dp[0] = nums[0]
+    for i in range(1, length):
+        max_dp[i] = max(max_dp[i - 1] * nums[i], max(min_dp[i - 1] * nums[i], nums[i]))
+        min_dp[i] = min(min_dp[i - 1] * nums[i], min(max_dp[i - 1] * nums[i], nums[i]))
+    return max(max_dp)
+
+
+# print(maxProduct([5, 6, -3, 4, 3]))
 
 
 # 198. 打家劫舍
@@ -286,7 +336,7 @@ def rob(nums):
     return nums[-1], path[-1]
 
 
-print(rob([2, 6, 3]))
+# print(rob([2, 6, 3]))
 
 
 # 213. 打家劫舍II
@@ -353,3 +403,44 @@ def lengthOfLIS(nums):
                 cnt = max(cnt, dp[j] + 1)
         dp[i] = cnt
     return max(dp)
+
+
+# 0-1背包
+def knapsack(N, W, wt, val):
+    dp = [[0 for _ in range(W + 1)] for _ in range(N + 1)]
+    for i in range(1, N + 1):
+        for w in range(1, W + 1):
+            if w - wt[i - 1] < 0:
+                dp[i][w] = dp[i - 1][w]
+            else:
+                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - wt[i - 1]] + val[i - 1])
+    return dp[N][W]
+
+
+# print(knapsack(3, 4, [2, 2, 2], [4, 2, 3]))
+
+# 416. 分割等和子集
+def canPartition(nums):
+    """
+    :type nums: List[int]
+    :rtype: bool
+    """
+    if not nums:
+        return False
+    arr_sum = sum(nums)
+    if arr_sum % 2 != 0:
+        return False
+    N, W = len(nums), arr_sum // 2
+    dp = [[False for _ in range(W + 1)] for _ in range(N + 1)]
+    for i in range(N + 1):
+        dp[i][0] = True
+    for i in range(1, N + 1):
+        for j in range(1, W + 1):
+            if j < nums[i - 1]:
+                dp[i][j] = dp[i - 1][j]
+            else:
+                dp[i][j] = dp[i - 1][j] | dp[i - 1][j - nums[i - 1]]
+    return dp[-1][-1]
+
+
+print(canPartition([1, 1, 2]))
