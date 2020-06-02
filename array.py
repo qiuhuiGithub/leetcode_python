@@ -227,6 +227,33 @@ def maxSubArray(nums):
     return max_sum
 
 
+# 54. 螺旋矩阵
+def spiralOrder(matrix):
+    """
+    :type matrix: List[List[int]]
+    :rtype: List[int]
+    """
+    ans = []
+    if not matrix:
+        return ans
+    row, col = len(matrix), len(matrix[0])
+    visit = [[False] * col for _ in range(row)]
+    dir = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+    r = c = d = 0
+    for _ in range(row * col):
+        visit[r][c] = True
+        ans.append(matrix[r][c])
+        if 0 <= r + dir[d][0] < row and 0 <= c + dir[d][1] < col and not visit[r + dir[d][0]][c + dir[d][1]]:
+            r, c = r + dir[d][0], c + dir[d][1]
+        else:
+            d = (d + 1) % 4
+            r, c = r + dir[d][0], c + dir[d][1]
+    return ans
+
+
+print(spiralOrder([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
+
+
 # 218. 天际线问题
 def getSkyline(buildings):
     """
@@ -261,6 +288,5 @@ def getSkyline(buildings):
         final_res.append([res[i + 1][0], res[i][1]])
     final_res.append(res[-1])
     return final_res
-
 
 # print(getSkyline([[2, 9, 10], [3, 7, 15], [5, 12, 12], [15, 20, 10], [19, 24, 8]]))

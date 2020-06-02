@@ -48,22 +48,43 @@ class Solution():
     #         return self.isMatch(text, pattern[2:]) or (first_match and self.isMatch(text[1:], pattern))
     #     else:
     #         return first_match and self.isMatch(text[1:], pattern[1:])
+    # 自顶向下
     # dp[i][j] = dp[i][j+2] || (p[j]==t[i] or p[i]=='.') & dp[i+1][j] if p[j+1] == '*'
     # dp[i][j] = dp[i+1][j+1] & (p[j]==t[i] or p[i]=='.') if p[j+1] != '*'
-    def isMatch(self, text, pattern):  # 动态规划
-        dp = [[False] * (len(pattern) + 1) for _ in range(len(text) + 1)]
-        dp[-1][-1] = True
-        for i in range(len(text), -1, -1):
-            for j in range(len(pattern) - 1, -1, -1):
-                first_match = i < len(text) and pattern[j] in [text[i], "."]
-                if j + 1 < len(pattern) and pattern[j + 1] == "*":
-                    dp[i][j] = dp[i][j + 2] or (first_match and dp[i + 1][j])
+    # def isMatch(self, text, pattern):  # 动态规划
+    #     dp = [[False] * (len(pattern) + 1) for _ in range(len(text) + 1)]
+    #     dp[-1][-1] = True
+    #     for i in range(len(text), -1, -1):
+    #         for j in range(len(pattern) - 1, -1, -1):
+    #             first_match = i < len(text) and pattern[j] in [text[i], "."]
+    #             if j + 1 < len(pattern) and pattern[j + 1] == "*":
+    #                 dp[i][j] = dp[i][j + 2] or (first_match and dp[i + 1][j])
+    #             else:
+    #                 dp[i][j] = first_match and dp[i + 1][j + 1]
+    #     return dp[0][0]
+    # dp[i][j] = i > 0 and dp[i-1][j-1] and (s[i-1] == p[j-1] or p[j-1] == '.') if p[j-1]!= '*'
+    # dp[i][j] = dp[i][j - 2] or (i > 0 and (s[i - 1] == p[j - 2] or p[j - 2] == '.') and dp[i - 1][j]) if p[j-1] == '*'
+    # 自底向上
+    def isMatch(self, s, p):
+        """
+        :type s: str
+        :type p: str
+        :rtype: bool
+        """
+        dp = [[False] * (len(p) + 1) for _ in range(len(s) + 1)]
+        dp[0][0] = True
+        for i in range(0, len(s)+1):
+            for j in range(1, len(p)+1):
+                if p[j-1] == '*':
+                    dp[i][j] = dp[i][j - 2] or (i > 0 and (s[i-1] == p[j-2] or p[j-2] == '.') and dp[i - 1][j]);
                 else:
-                    dp[i][j] = first_match and dp[i + 1][j + 1]
-        return dp[0][0]
+                    dp[i][j] = i > 0 and dp[i-1][j-1] and (s[i-1] == p[j-1] or p[j-1] == '.')
+        return dp[-1][-1]
 
 
 solution = Solution()
+
+
 # print(solution.isMatch('bb', 'b*'))
 
 
@@ -443,4 +464,85 @@ def canPartition(nums):
     return dp[-1][-1]
 
 
-print(canPartition([1, 1, 2]))
+# print(canPartition([1, 1, 2]))
+
+# 面试题08.11. 硬币
+def waysToChange(n):
+    """
+    :type n: int
+    :rtype: int
+    """
+    MAX = 1000000007
+    if n < 0:
+        return 0
+    dp = [0] * (n + 1)
+    dp[0] = 1
+    coins = [25, 10, 5, 1]
+
+    for coin in coins:
+        for i in range(coin, n + 1):
+            dp[i] += dp[i - coin]
+    return dp[-1] % MAX
+
+
+# print(waysToChange(10))
+
+# 322. 零钱兑换
+def coinChange(coins, amount):
+    """
+    :type coins: List[int]
+    :type amount: int
+    :rtype: int
+    """
+    dp = [float('inf')] * (amount + 1)
+    dp[0] = 0
+    for coin in coins:
+        for i in range(coin, amount + 1):
+            dp[i] = min(dp[i], dp[i - coin] + 1)
+    return dp[-1] if dp[-1] != float('inf') else -1
+
+
+# print(coinChange([2], 11))
+
+# 494. 目标和
+def findTargetSumWays(nums, S):
+    """
+    :type nums: List[int]
+    :type S: int
+    :rtype: int
+    """
+    length, max_sum = len(nums), sum(nums)
+    if S > max_sum or S < -max_sum:
+        return 0
+    dp = [{} for _ in range(length)]
+    dp[0][nums[0]] = 1
+    dp[0][-nums[0]] = 1
+    if nums[0] == 0:
+        dp[0][0] = 2
+    for i in range(1, length):
+        for j in range(-max_sum, max_sum + 1):
+            dp[i][j] = dp[i - 1].get(j - nums[i], 0) + dp[i - 1].get(j + nums[i], 0)
+    return dp[-1][S]
+
+
+print(findTargetSumWays([1, 0], 1))
+
+
+# 518.零钱兑换
+def change(amount, coins):
+    """
+    :type amount: int
+    :type coins: List[int]
+    :rtype: int
+    """
+    if amount == 0 and not coins:
+        return 1
+    dp = [0] * (amount + 1)
+    dp[0] = 1
+
+    for coin in coins:
+        for i in range(coin, amount + 1):
+            dp[i] += dp[i - coin]
+    return dp[-1]
+
+# print(change(0, []))

@@ -100,6 +100,50 @@ def reverseKGroup(head: ListNode, k: int):
         head = tmp
     return p_head.next
 
+
+# 141. 环形链表
+def hasCycle(head):
+    """
+    :type head: ListNode
+    :rtype: bool
+    """
+    if not head:
+        return False
+    slow = fast = head
+    while fast is not None and fast.next is not None:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+    return False
+
+# 142. 环形链表II
+def detectCycle(head):
+    """
+    :type head: ListNode
+    :rtype: ListNode
+    """
+    if not head:
+        return None
+    slow = fast = head
+    while fast is not None and fast.next is not None:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            break
+    if slow != fast or fast.next is None:
+        return None
+    fast = head
+    while fast != slow:
+        fast, slow = fast.next, slow.next
+    return fast
+
+head = ListNode(1)
+#head.next = ListNode(2)
+#head.next.next = ListNode(3)
+#head.next.next.next = head
+print(detectCycle(head))
+
 # 306. 反转链表
 def reverseList(head: ListNode) -> ListNode:
     p_head = ListNode(0)

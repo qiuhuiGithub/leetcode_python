@@ -9,6 +9,19 @@ def jump(nums):
             step += 1
     return step
 
+# 55.跳跃游戏
+def canJump(nums):
+    """
+    :type nums: List[int]
+    :rtype: bool
+    """
+    n, rightmost = len(nums), 0
+    for i in range(n):
+        if i <= rightmost:
+            rightmost = max(rightmost, i + nums[i])
+            if rightmost >= n - 1:
+                return True
+    return False
 
 # 121. 买卖股票的最佳时机
 def maxProfit(prices):

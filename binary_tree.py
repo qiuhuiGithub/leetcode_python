@@ -156,6 +156,22 @@ def lowestCommonAncestor(root, p, q):
         return right
     return None
 
+
+# 96. 不同的二叉搜索树（卡特兰数）
+def numTrees(n):
+    """
+    :type n: int
+    :rtype: int
+    """
+    dp = [0 for _ in range(n+1)]
+    dp[0] = dp[1] = 1
+    for i in range(2,n+1):
+        for j in range(1,i+1):
+            dp[i] += dp[j-1] * dp[i-j]
+    return dp[-1]
+
+print(numTrees(2))
+
 # 98. 验证二叉搜索树
 def isValidBST(root):
     """
