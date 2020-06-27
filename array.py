@@ -132,6 +132,8 @@ def removeDuplicates(nums):
     return i + 1
 
 
+# print(removeDuplicates([1,1,2,2,3]))
+
 # 27. 移除元素
 def removeElement(nums, val):
     if not nums:
@@ -251,7 +253,175 @@ def spiralOrder(matrix):
     return ans
 
 
-print(spiralOrder([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
+# print(spiralOrder([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
+
+# 56. 合并区间
+def merge(intervals):
+    """
+    :type intervals: List[List[int]]
+    :rtype: List[List[int]]
+    """
+    res = []
+    if not intervals:
+        return res
+    intervals = sorted(intervals)
+    res.append(intervals[0])
+    for interval in intervals[1:]:
+        if interval[0] > res[-1][1]:
+            res.append(interval)
+        else:
+            r = res.pop()
+            right = max(r[1], interval[1])
+            res.append([r[0], right])
+    return res
+
+
+# print(merge([[1, 4], [0,4]]))
+
+# 57.插入区间
+def insert(intervals, newInterval):
+    """
+    :type intervals: List[List[int]]
+    :type newInterval: List[int]
+    :rtype: List[List[int]]
+    """
+    res = []
+    if not intervals:
+        return res
+    if not newInterval:
+        return intervals
+    intervals.append(newInterval)
+    intervals = sorted(intervals)
+    res.append(intervals[0])
+    for interval in intervals[1:]:
+        if interval[0] > res[-1][1]:
+            res.append(interval)
+        else:
+            r = res.pop()
+            right = max(r[1], interval[1])
+            res.append([r[0], right])
+    return res
+
+
+# print(insert([[1, 3], [6, 9]], [2, 5]))
+
+
+# 59.螺旋矩阵II
+def generateMatrix(n):
+    """
+    :type n: int
+    :rtype: List[List[int]]
+    """
+    if n == 0:
+        return []
+    visit = [[False] * n for _ in range(n)]
+    ans = [[0] * n for _ in range(n)]
+    dir = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+    r = c = d = 0
+    for i in range(1, n * n + 1):
+        ans[r][c] = i
+        visit[r][c] = True
+        if 0 <= r + dir[d][0] < n and 0 <= c + dir[d][1] < n and not visit[r + dir[d][0]][c + dir[d][1]]:
+            r, c = r + dir[d][0], c + dir[d][1]
+        else:
+            d = (d + 1) % 4
+            r, c = r + dir[d][0], c + dir[d][1]
+    return ans
+
+
+# print(generateMatrix(3))
+
+
+# 66. 加一
+def plusOne(digits):
+    """
+    :type digits: List[int]
+    :rtype: List[int]
+    """
+    if not digits:
+        return
+    carry = 0
+    res = []
+    for i in range(len(digits) - 1, -1, -1):
+        if i == len(digits) - 1:
+            sum = (digits[i] + carry + 1)
+        else:
+            sum = (digits[i] + carry)
+        carry = sum // 10
+        res.append(sum % 10)
+    if carry:
+        res.append(1)
+    return res[::-1]
+
+
+# print(plusOne([0]))
+
+# 73. 矩阵置零
+def setZeroes(matrix):
+    """
+    :type matrix: List[List[int]]
+    :rtype: None Do not return anything, modify matrix in-place instead.
+    """
+    row, col = [0] * len(matrix), [0] * len(matrix[0])
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            if matrix[i][j] == 0:
+                row[i], col[j] = 1, 1
+    for i in range(len(row)):
+        if row[i] == 1:
+            matrix[i] = [0] * len(matrix[0])
+    for j in range(len(col)):
+        if col[j] == 1:
+            for i in range(len(matrix)):
+                matrix[i][j] = 0
+
+
+print(setZeroes([
+    [0, 1, 2, 0],
+    [3, 4, 5, 2],
+    [1, 3, 1, 5]
+]))
+
+
+# 75. 颜色分类
+def sortColors(nums):
+    """
+    :type nums: List[int]
+    :rtype: None Do not return anything, modify nums in-place instead.
+    """
+    curr, left, right = 0, 0, len(nums) - 1
+    while curr <= right:
+        if nums[curr] == 0:
+            nums[curr], nums[left] = nums[left], nums[curr]
+            curr += 1
+            left += 1
+        elif nums[curr] == 2:
+            nums[curr], nums[right] = nums[right], nums[curr]
+            right -= 1
+        else:
+            curr += 1
+    print(nums)
+
+
+# sortColors([2,0,1])
+
+# 80. 移除重复元素
+def removeDuplicates(nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    if not nums:
+        return 0
+    i = 0
+    for num in nums:
+        if i < 2 or num != nums[i - 2]:
+            nums[i] = num
+            i += 1
+    return i
+
+
+print(removeDuplicates([1, 1, 1, 2, 2, 2, 2, 3]))
 
 
 # 218. 天际线问题

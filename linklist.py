@@ -4,6 +4,7 @@ class ListNode:
         self.val = x
         self.next = None
 
+
 # 2. add two numbers
 def addTwoNumbers(l1, l2):
     head = ListNode(0)
@@ -22,6 +23,7 @@ def addTwoNumbers(l1, l2):
         result.next = ListNode(1)
     return head.next
 
+
 # 19. 删除链表的倒数第n个节点
 def removeNthFromEnd(head: ListNode, n: int) -> ListNode:
     start = ListNode(0)
@@ -37,6 +39,7 @@ def removeNthFromEnd(head: ListNode, n: int) -> ListNode:
     slow.next = slow.next.next
 
     return start.next
+
 
 # 21.合并两个有序链表
 def mergeTwoLists(l1: ListNode, l2: ListNode) -> ListNode:
@@ -56,6 +59,7 @@ def mergeTwoLists(l1: ListNode, l2: ListNode) -> ListNode:
         pointer.next = l2
     return head.next
 
+
 # 23. 合并k个排序链表
 def mergeKLists(lists) -> ListNode:
     if not lists:
@@ -66,6 +70,7 @@ def mergeKLists(lists) -> ListNode:
             lists[i] = mergeTwoLists(lists[i], lists[i + index])
         index *= 2
     return lists[0]
+
 
 # 24. 两两交换链表中的节点
 def swapPairs(head: ListNode) -> ListNode:
@@ -78,6 +83,7 @@ def swapPairs(head: ListNode) -> ListNode:
         end.next = start
         tmp = start
     return p_head.next
+
 
 # 25. k个一组翻转链表
 def reverseKGroup(head: ListNode, k: int):
@@ -101,6 +107,48 @@ def reverseKGroup(head: ListNode, k: int):
     return p_head.next
 
 
+# 61.旋转链表
+def rotateRight(head, k):
+    """
+    :type head: ListNode
+    :type k: int
+    :rtype: ListNode
+    """
+    # base cases
+    if not head:
+        return None
+    if not head.next:
+        return head
+
+    # close the linked list into the ring
+    old_tail = head
+    n = 1
+    while old_tail.next:
+        old_tail = old_tail.next
+        n += 1
+    old_tail.next = head
+
+    # find new tail : (n - k % n - 1)th node
+    # and new head : (n - k % n)th node
+    new_tail = head
+    for i in range(n - k % n - 1):
+        new_tail = new_tail.next
+    new_head = new_tail.next
+
+    # break the ring
+    new_tail.next = None
+
+    return new_head
+
+head = ListNode(1)
+head.next = ListNode(2)
+head.next.next = ListNode(3)
+res = rotateRight(head,1)
+while res:
+    print(res.val)
+    res = res.next
+
+
 # 141. 环形链表
 def hasCycle(head):
     """
@@ -116,6 +164,7 @@ def hasCycle(head):
         if slow == fast:
             return True
     return False
+
 
 # 142. 环形链表II
 def detectCycle(head):
@@ -138,11 +187,13 @@ def detectCycle(head):
         fast, slow = fast.next, slow.next
     return fast
 
+
 head = ListNode(1)
-#head.next = ListNode(2)
-#head.next.next = ListNode(3)
-#head.next.next.next = head
+# head.next = ListNode(2)
+# head.next.next = ListNode(3)
+# head.next.next.next = head
 print(detectCycle(head))
+
 
 # 306. 反转链表
 def reverseList(head: ListNode) -> ListNode:

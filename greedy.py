@@ -23,6 +23,8 @@ def canJump(nums):
                 return True
     return False
 
+
+
 # 121. 买卖股票的最佳时机
 def maxProfit(prices):
     """

@@ -114,7 +114,7 @@ def combinationSum(candidates, target):
     return res
 
 
-print(combinationSum([2, 3], 8))
+# print(combinationSum([2, 3], 8))
 
 
 # 40.组合总和II
@@ -158,6 +158,9 @@ def permute(nums):
 
     backtrack([], nums)
     return res
+
+
+print(permute([1, 2, 3]))
 
 
 # 47.全排列II
@@ -265,6 +268,116 @@ def totalNQueens(n):
     board = [['.' for _ in range(n)] for _ in range(n)]
     backtrack(board, 0)
     return len(res)
+
+
+# 60.第K个排列
+def getPermutation(n, k):
+    """
+    :type n: int
+    :type k: int
+    :rtype: str
+    """
+    res = []
+    candidate = []
+    factorials = [1 for _ in range(n + 1)]
+    fact = 1
+    for i in range(1, n + 1):
+        candidate.append(i)
+        fact *= i
+        factorials[i] = fact
+    k -= 1
+    for i in range(n - 1, -1, -1):
+        index = k // factorials[i]
+        res.append(candidate.pop(index))
+        k -= index * factorials[i]
+    return ''.join([str(i) for i in res])
+
+
+# print(getPermutation(3, 3))
+
+
+# 77.组合总和
+def combine(n, k):
+    """
+    :type n: int
+    :type k: int
+    :rtype: List[List[int]]
+    """
+    res = []
+
+    def backtrack(path, nums):
+        if len(path) == k:
+            res.append(path[:])
+            return
+        for i in range(len(nums)):
+            path.append(nums[i])
+            backtrack(path, nums[i + 1:])
+            path.pop()
+
+    backtrack([], [i + 1 for i in range(n)])
+    return res
+
+
+print(combine(4, 2))
+
+
+# 78.子集
+def subsets(nums):
+    """
+    :type nums: List[int]
+    :rtype: List[List[int]]
+    """
+    res = []
+
+    def backtrack(path, nums):
+        if len(nums) >= 0:
+            res.append(path[:])
+        for i in range(len(nums)):
+            path.append(nums[i])
+            backtrack(path, nums[i + 1:])
+            path.pop()
+
+    backtrack([], nums)
+    return res
+
+
+print(subsets([1, 2, 3]))
+
+
+# 79. 单词搜索
+def exist(board, word):
+    """
+    :type board: List[List[str]]
+    :type word: str
+    :rtype: bool
+    """
+
+    def backtrack(board, word, i, j, k):
+        if k >= len(word):
+            return True
+        if i < 0 or i >= m or j < 0 or j >= n or board[i][j] != word[k]:
+            return False
+        tmp = board[i][j]
+        board[i][j] = 0
+        res = backtrack(board, word, i - 1, j, k + 1) or backtrack(board, word, i + 1, j, k + 1) or \
+              backtrack(board, word, i, j - 1, k + 1) or backtrack(board, word, i, j + 1, k + 1)
+        board[i][j] = tmp
+        return res
+
+    if not board or not board[0]:
+        return False
+    m, n = len(board), len(board[0])
+    for i in range(m):
+        for j in range(n):
+            if backtrack(board, word, i, j, 0):
+                return True
+    return False
+
+
+print(exist([['A', 'B', 'C', 'E'],
+             ['S', 'F', 'C', 'S'],
+             ['A', 'D', 'E', 'E']], 'ABCCED'))
+
 
 # 113. 路径总和
 def pathSum(root, sum):
