@@ -140,10 +140,43 @@ def rotateRight(head, k):
 
     return new_head
 
+
+# head = ListNode(1)
+# head.next = ListNode(2)
+# head.next.next = ListNode(3)
+# res = rotateRight(head,1)
+# while res:
+#     print(res.val)
+#     res = res.next
+
+# 86. 分割链表
+def partition(head, x):
+    """
+    :type head: ListNode
+    :type x: int
+    :rtype: ListNode
+    """
+    p_before = before = ListNode(0)
+    p_after = after = ListNode(0)
+    while head:
+        if head.val < x:
+            before.next = ListNode(head.val)
+            before = before.next
+        else:
+            after.next = ListNode(head.val)
+            after = after.next
+        head = head.next
+    before.next = p_after.next
+    return p_before.next
+
+
 head = ListNode(1)
-head.next = ListNode(2)
+head.next = ListNode(4)
 head.next.next = ListNode(3)
-res = rotateRight(head,1)
+head.next.next.next = ListNode(2)
+head.next.next.next.next = ListNode(5)
+head.next.next.next.next.next = ListNode(2)
+res = partition(head, 3)
 while res:
     print(res.val)
     res = res.next

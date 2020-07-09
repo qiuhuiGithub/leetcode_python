@@ -421,7 +421,34 @@ def removeDuplicates(nums):
     return i
 
 
-print(removeDuplicates([1, 1, 1, 2, 2, 2, 2, 3]))
+# print(removeDuplicates([1, 1, 1, 2, 2, 2, 2, 3]))
+
+# 88.合并两个有序数组
+def merge(nums1, m, nums2, n):
+    """
+    :type nums1: List[int]
+    :type m: int
+    :type nums2: List[int]
+    :type n: int
+    :rtype: None Do not return anything, modify nums1 in-place instead.
+    """
+    nums1_copy = nums1[0:m]
+    nums1[:] = []
+    p1 = p2 = 0
+    while p1 < m and p2 < n:
+        if nums1_copy[p1] < nums2[p2]:
+            nums1.append(nums1_copy[p1])
+            p1 += 1
+        else:
+            nums1.append(nums2[p2])
+            p2 += 1
+    if p1 < m:
+        nums1[p1 + p2:] = nums1_copy[p1:]
+    else:
+        nums1[p1 + p2:] = nums2[p2:]
+
+
+print(merge([1, 2, 3, 0, 0, 0], 3, [2, 5, 6], 3))
 
 
 # 218. 天际线问题

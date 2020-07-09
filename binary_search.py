@@ -171,7 +171,7 @@ def search(nums, target):
     return False
 
 
-print(search([1, 3, 1, 1, 1], 3))
+# print(search([1, 3, 1, 1, 1], 3))
 
 
 # 153. 寻找旋转排序数组中的最小值
@@ -219,18 +219,99 @@ def findKthLargest(nums, k):
         nums[left] = pivot
         return left
 
-    # target_k = len(nums) - k
-    target_k = k
+    target_k = len(nums) - k
     low, high = 0, len(nums) - 1
-    if target_k == len(nums):
-        return nums
     while True:
         index = partition(nums, low, high)
         if index == target_k:
-            return nums[:index]
+            return nums[index]
         elif index < target_k:
             low = index + 1
         else:
             high = index - 1
 
-# print(findKthLargest([0, 0, 2, 3, 2, 1, 1, 2, 0, 4], 10))
+
+# print(findKthLargest([3, 2, 1, 5, 6, 4], 2))
+
+
+# 347. 前K个高频元素
+# def topKFrequent(nums, k):
+#     """
+#     :type nums: List[int]
+#     :type k: int
+#     :rtype: List[int]
+#     """
+#
+#     def partition(nums, left, right):
+#         pivot = nums[left]
+#         while left < right:
+#             while left < right and nums[right][1] >= pivot[1]:
+#                 right -= 1
+#             nums[left] = nums[right]
+#             while left < right and nums[left][1] < pivot[1]:
+#                 left += 1
+#             nums[right] = nums[left]
+#         nums[left] = pivot
+#         return left
+#
+#     d = {}
+#     for num in nums:
+#         if num not in d.keys():
+#             d[num] = 1
+#         else:
+#             d[num] += 1
+#     nums = [(k, v) for k, v in d.items()]
+#     low, high = 0, len(nums) - 1
+#     k = len(nums) - k
+#     if k == len(nums):
+#         return [k for k, v in nums]
+#     while True:
+#         index = partition(nums, low, high)
+#         if index == k:
+#             return [k for k, v in nums[index:]]
+#         elif index < k:
+#             low = index + 1
+#         else:
+#             high = index - 1
+
+def topKFrequent(nums, k):
+    """
+    :type nums: List[int]
+    :type k: int
+    :rtype: List[int]
+    """
+
+    def partition(nums, left, right):
+        pivot = nums[left]
+        while left < right:
+            while left < right and nums[right][1] >= pivot[1]:
+                right -= 1
+            nums[left] = nums[right]
+            while left < right and nums[left][1] < pivot[1]:
+                left += 1
+            nums[right] = nums[left]
+        nums[left] = pivot
+        return left
+
+    d = {}
+    for num in nums:
+        if num not in d.keys():
+            d[num] = 1
+        else:
+            d[num] += 1
+    lst = [(key, val) for key, val in d.items()]
+    low, high = 0, len(lst) - 1
+    k = len(lst) - k
+    if k == len(lst):
+        return [key for key, val in lst]
+    while True:
+        index = partition(lst, low, high)
+        if index == k:
+            return [key for key, val in lst[index:]]
+        elif index < k:
+            low = index + 1
+        else:
+            high = index - 1
+
+
+print(topKFrequent([1, 1, 1, 2, 2, 3], 2))

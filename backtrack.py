@@ -160,7 +160,7 @@ def permute(nums):
     return res
 
 
-print(permute([1, 2, 3]))
+# print(permute([1, 2, 3]))
 
 
 # 47.全排列II
@@ -318,7 +318,7 @@ def combine(n, k):
     return res
 
 
-print(combine(4, 2))
+# print(combine(4, 2))
 
 
 # 78.子集
@@ -341,7 +341,7 @@ def subsets(nums):
     return res
 
 
-print(subsets([1, 2, 3]))
+# print(subsets([1, 2, 3]))
 
 
 # 79. 单词搜索
@@ -374,9 +374,63 @@ def exist(board, word):
     return False
 
 
-print(exist([['A', 'B', 'C', 'E'],
-             ['S', 'F', 'C', 'S'],
-             ['A', 'D', 'E', 'E']], 'ABCCED'))
+# print(exist([['A', 'B', 'C', 'E'],
+#              ['S', 'F', 'C', 'S'],
+#              ['A', 'D', 'E', 'E']], 'ABCCED'))
+
+
+# 89. 格雷编码
+def grayCode(n):
+    """
+    :type n: int
+    :rtype: List[int]
+    """
+    res = []
+    visit = [False for _ in range(2 ** n)]
+
+    def backtrack(curr):
+        if len(res) == 2 ** n:
+            return True
+        res.append(curr)
+        visit[curr] = True
+        for i in range(n):
+            next = curr ^ (1 << i)
+            if visit[next]:
+                continue
+            backtrack(next)
+        visit[curr] = False
+        return False
+
+    backtrack(0)
+    return res
+
+
+# print(grayCode(2))
+
+# 90.子集
+def subsetsWithDup(nums):
+    """
+    :type nums: List[int]
+    :rtype: List[List[int]]
+    """
+    res = []
+    nums.sort()
+
+    def backtrack(idx, path, nums):
+        if idx <= len(nums):
+            res.append(path[:])
+        for i in range(idx, len(nums)):
+            if i > idx and nums[i] == nums[i - 1]:
+                continue
+            path.append(nums[i])
+            backtrack(i + 1, path, nums)
+            path.pop()
+
+    backtrack(0, [], nums)
+    return res
+
+
+print(subsetsWithDup([1, 2, 2]))
 
 
 # 113. 路径总和
