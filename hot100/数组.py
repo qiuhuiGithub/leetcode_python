@@ -148,3 +148,53 @@ class Solution(object):
         if nums[0] > 0:
             return n
         return n + 1
+
+# 128. 最长连续序列
+class Solution(object):
+    def longestConsecutive(self, nums):
+        longest = 0
+        nums = set(nums)
+        for num in nums:
+            if num - 1 not in nums:
+                cur = 1
+                while num + 1 in nums:
+                    cur += 1
+                    num += 1
+                longest = max(longest, cur)
+        return longest
+
+# 560.和为k的子数组
+class Solution(object):
+    def subarraySum(self, nums, k):
+        ans, pre = 0, 0
+        pre_cnt = defaultdict()
+        pre_cnt[0] = 1
+        for num in nums:
+            pre += num
+            target = pre - k
+            if target in pre_cnt:
+                ans += pre_cnt.get(target)
+            pre_cnt[pre] = pre_cnt.get(pre, 0) + 1
+        return ans
+
+# 498. 对角线遍历
+class Solution(object):
+    def findDiagonalOrder(self, mat):
+        ans = []
+        m, n = len(mat), len(mat[0])
+        for i in range(m + n - 1):
+            if i % 2:
+                x = 0 if i < n else i - n + 1
+                y = i if i < n else n - 1
+                while x < m and y >= 0:
+                    ans.append(mat[x][y])
+                    x += 1
+                    y -= 1
+            else:
+                x = i if i < m else m - 1
+                y = 0 if i < m else i - m + 1
+                while x >= 0 and y < n:
+                    ans.append(mat[x][y])
+                    x -= 1
+                    y += 1
+        return ans

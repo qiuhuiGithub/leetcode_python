@@ -8,9 +8,10 @@ class Solution(object):
         min_price = float('inf')
         max_profit = 0
         for price in prices:
-            max_profit = max(price-min_price, max_profit)
+            max_profit = max(price - min_price, max_profit)
             min_price = min(min_price, price)
         return max_profit
+
 
 # 122.买卖股票的最佳时机 不限次数
 class Solution(object):
@@ -19,12 +20,13 @@ class Solution(object):
         :type prices: List[int]
         :rtype: int
         """
-        if len(prices)<2:
+        if len(prices) < 2:
             return 0
         max_profit = 0
         for i in range(1, len(prices)):
-            max_profit += max(0, prices[i]-prices[i-1])
+            max_profit += max(0, prices[i] - prices[i - 1])
         return max_profit
+
 
 # 123.买卖股票的最佳时机,最多2次
 class Solution(object):
@@ -42,6 +44,7 @@ class Solution(object):
             buy2 = max(buy2, sell1 - prices[i])
             sell2 = max(sell2, buy2 + prices[i])
         return sell2
+
 
 # 188.买卖股票的最佳时机,k次
 class Solution(object):
@@ -66,3 +69,25 @@ class Solution(object):
                 buy[j] = max(buy[j], sell[j] - prices[i])
                 sell[j] = max(sell[j], buy[j - 1] + prices[i])
         return max(sell)
+
+
+# 55. 跳跃游戏
+class Solution(object):
+    def canJump(self, nums):
+        k = 0
+        for i in range(len(nums)):
+            if i > k:
+                return False
+            k = max(k, i + nums[i])
+        return True
+
+    def jump(self, nums):
+        if not nums:
+            return False
+        dp = [float('inf') for _ in range(len(nums))]
+        dp[0] = 0
+        for i in range(1, len(nums)):
+            for j in range(0, i):
+                if nums[j] >= i - j:
+                    dp[i] = min(dp[i], dp[j] + 1)
+        return dp[-1]

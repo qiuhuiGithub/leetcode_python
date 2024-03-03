@@ -1,18 +1,21 @@
-# 53.最大子序和
+# 53.最大子数组和
 class Solution(object):
     def maxSubArray(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
         if not nums:
-            return -1
+            return 0
+        res = max_path = [nums[0]]
         max_sum = nums[0]
         for i in range(1, len(nums)):
-            if nums[i-1] > 0:
-                nums[i] += nums[i-1]
-            max_sum = max(max_sum, nums[i])
-        return max_sum
+            if nums[i - 1] > 0:
+                max_path.append(nums[i])
+                nums[i] += nums[i - 1]
+            else:
+                max_path = [nums[i]]
+            if nums[i] > max_sum:
+                max_sum = nums[i]
+                res = max_path[:]  # 路径
+        return max_sum, res
+
 
 # 4.最长回文子串
 class Solution:
@@ -29,6 +32,7 @@ class Solution:
                     left = i
                     right = j
         return s[left:right + 1]
+
 
 # 516.最长回文子序列
 class Solution(object):
@@ -50,6 +54,7 @@ class Solution(object):
                     dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
         return dp[0][length - 1]
 
+
 # 300. 最长递增子序列
 class Solution(object):
     def lengthOfLIS(self, nums):
@@ -66,6 +71,7 @@ class Solution(object):
                 if nums[i] > nums[j]:
                     dp[i] = max(dp[i], dp[j] + 1)
         return max(dp)
+
 
 # 72.编辑距离
 class Solution(object):
@@ -84,18 +90,20 @@ class Solution(object):
                     dp[i][j] = min(min(dp[i - 1][j - 1], dp[i][j - 1]), dp[i - 1][j]) + 1
         return dp[-1][-1]
 
+
 # 1143.最长公共子序列
 class Solution(object):
     def longestCommonSubsequence(self, text1, text2):
         m, n = len(text1), len(text2)
-        dp = [[0] * (n+1) for _ in range(m+1)]
-        for i in range(1,m+1):
-            for j in range(1, n+1):
-                if text1[i-1] == text2[j-1]:
-                    dp[i][j] = dp[i-1][j-1] + 1
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if text1[i - 1] == text2[j - 1]:
+                    dp[i][j] = dp[i - 1][j - 1] + 1
                 else:
-                    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
         return dp[-1][-1]
+
 
 # 最长公共子串
 def longestCommonSubstring(text1, text2):
@@ -111,6 +119,7 @@ def longestCommonSubstring(text1, text2):
                 dp[i][j] = 0
     return max_len
 
+
 # 322. 零钱兑换
 class Solution(object):
     def coinChange(self, coins, amount):
@@ -120,6 +129,7 @@ class Solution(object):
             for i in range(coin, amount + 1):
                 dp[i] = min(dp[i], dp[i - coin] + 1)
         return dp[-1] if dp[-1] != float('inf') else -1
+
 
 # 377. 组合总和的个数
 class Solution(object):
@@ -131,6 +141,7 @@ class Solution(object):
                 if num <= i:
                     dp[i] += dp[i - num]
         return dp[-1]
+
 
 # 64. 最小路径和
 class Solution(object):
@@ -147,3 +158,15 @@ class Solution(object):
                 grid[i][j] = min(grid[i - 1][j], grid[i][j - 1]) + grid[i][j]
         return grid[-1][-1]
 
+# 152. 乘积最大子数组
+class Solution(object):
+    def maxProduct(self, nums):
+        if not nums:
+            return 0
+        max_dp = [0 for _ in range(len(nums))]
+        min_dp = [0 for _ in range(len(nums))]
+        max_dp[0], min_dp[0] = nums[0], nums[0]
+        for i in range(1, len(nums)):
+            max_dp[i] = max(max_dp[i - 1] * nums[i], max(min_dp[i - 1] * nums[i], nums[i]))
+            min_dp[i] = min(max_dp[i - 1] * nums[i], min(min_dp[i - 1] * nums[i], nums[i]))
+        return max(max_dp)

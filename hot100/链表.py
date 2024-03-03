@@ -217,3 +217,19 @@ class Solution(object):
                 l2 = l2.next
             node = node.next
         return dummy.next
+
+# 24.两两交换链表中的节点
+class Solution(object):
+    def swapPairs(self, head):
+        if not head:
+            return None
+        p_head = tmp = ListNode(0)
+        tmp.next = head
+        while tmp.next and tmp.next.next:
+            p1 = tmp.next
+            p2 = tmp.next.next
+            tmp.next = p2
+            p1.next = p2.next
+            p2.next = p1
+            tmp = p1
+        return p_head.next

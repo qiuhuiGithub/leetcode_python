@@ -22,3 +22,20 @@ class Solution(object):
                     right_max = height[right]
                 right -= 1
         return ans
+
+# 209. 长度最小的子数组
+class Solution(object):
+    def minSubArrayLen(self, target, nums):
+        min_len = float('inf')
+        if not nums:
+            return 0
+        slow, fast = 0, 0
+        target_sum = 0
+        while fast < len(nums):
+            target_sum += nums[fast]
+            while target_sum >= target:
+                min_len = min(min_len, fast - slow + 1)
+                target_sum -= nums[slow]
+                slow += 1
+            fast += 1
+        return min_len if min_len != float('inf') else 0
